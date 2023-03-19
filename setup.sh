@@ -1,38 +1,8 @@
 #!/usr/bin/bash
 
 ################################################
-##### Time
-################################################
-
-# References:
-# https://wiki.archlinux.org/title/System_time#Time_zone
-# https://wiki.archlinux.org/title/Systemd-timesyncd
-
-# Enable systemd-timesyncd
-systemctl enable systemd-timesyncd.service
-
-# Set timezone
-ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
-hwclock --systohc --utc
-
-################################################
-##### Locale and keymap
-################################################
-
-# Set locale
-echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-echo "LANG=\"en_US.UTF-8\"" > /etc/locale.conf
-locale-gen
-
-# Set keymap
-echo "KEYMAP=us" > /etc/vconsole.conf
-
-################################################
 ##### Hostname
 ################################################
-
-# Set hostname
-echo ${NEW_HOSTNAME} > /etc/hostname
 
 # Set /etc/hosts
 tee /etc/hosts << EOF
@@ -93,84 +63,6 @@ pacman -S --noconfirm \
     rsync
 
 ################################################
-##### Swap
-################################################
-
-# References:
-# https://wiki.archlinux.org/title/Btrfs#Swap_file
-# https://wiki.archlinux.org/title/swap#Swappiness
-# https://wiki.archlinux.org/title/Improving_performance#zram_or_zswap
-# https://wiki.gentoo.org/wiki/Zram
-# https://www.dwarmstrong.org/zram-swap/
-# https://www.reddit.com/r/Fedora/comments/mzun99/new_zram_tuning_benchmarks/
-
-# Create swap file
-btrfs filesystem mkswapfile --size 8g /swap/swapfile
-
-# Activate swap file
-swapon /swap/swapfile
-
-# Add swapfile to fstab configuration
-tee -a /etc/fstab << EOF
-
-# swap file
-/swap/swapfile                              none        swap    defaults                                                                                                0 0
-EOF
-
-# Set swappiness
-echo 'vm.swappiness=30' > /etc/sysctl.d/99-swappiness.conf
-
-# Set vfs cache pressure
-echo 'vm.vfs_cache_pressure=50' > /etc/sysctl.d/99-vfs-cache-pressure.conf
-
-################################################
-##### Tweaks
-################################################
-
-# References:
-# https://github.com/CryoByte33/steam-deck-utilities/blob/main/docs/tweak-explanation.md
-# https://wiki.cachyos.org/en/home/General_System_Tweaks
-
-# Split Lock Mitigate - default: 1
-echo 'kernel.split_lock_mitigate=0' > /etc/sysctl.d/99-splitlock.conf
-
-# Compaction Proactiveness - default: 20
-echo 'vm.compaction_proactiveness=0' > /etc/sysctl.d/99-compaction_proactiveness.conf
-
-# Page Lock Unfairness - default: 5
-echo 'vm.page_lock_unfairness=1' > /etc/sysctl.d/99-page_lock_unfairness.conf
-
-# Hugepage Defragmentation - default: 1
-# Transparent Hugepages - default: always
-# Shared Memory in Transparent Hugepages - default: never
-tee /etc/systemd/system/kernel-tweaks.service << 'EOF'
-[Unit]
-Description=Set kernel tweaks
-After=multi-user.target
-StartLimitBurst=0
-
-[Service]
-Type=oneshot
-Restart=on-failure
-ExecStart=/usr/bin/bash -c 'echo always > /sys/kernel/mm/transparent_hugepage/enabled'
-ExecStart=/usr/bin/bash -c 'echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled'
-ExecStart=/usr/bin/bash -c 'echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag'
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-systemctl enable kernel-tweaks.service
-
-# Disable watchdog timer drivers
-# sudo dmesg | grep -e sp5100 -e iTCO -e wdt -e tco
-tee /etc/modprobe.d/disable-watchdog-drivers.conf << 'EOF'
-blacklist sp5100_tco
-blacklist iTCO_wdt
-blacklist iTCO_vendor_support
-EOF
-
-################################################
 ##### Users
 ################################################
 
@@ -182,8 +74,7 @@ echo "root:${NEW_USER_PASSWORD}" | chpasswd
 chsh -s /usr/bin/zsh
 
 # Setup user
-useradd -m -G wheel -s /usr/bin/zsh ${NEW_USER}
-echo "${NEW_USER}:${NEW_USER_PASSWORD}" | chpasswd
+usermod -G wheel -s /usr/bin/zsh ${NEW_USER}
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
 # Create XDG user directories
@@ -254,10 +145,6 @@ pacman -S --noconfirm firewalld
 systemctl enable firewalld.service
 firewall-offline-cmd --set-default-zone=block
 
-# Install and enable NetworkManager
-pacman -S --noconfirm networkmanager
-systemctl enable NetworkManager.service
-
 # Install bind tools
 pacman -S --noconfirm bind
 
@@ -284,9 +171,6 @@ mkinitcpio -P
 # References:
 # https://wiki.archlinux.org/title/systemd-boot
 
-# Install systemd-boot to the ESP
-bootctl install
-
 # systemd-boot upgrade hook
 mkdir -p /etc/pacman.d/hooks
 tee /etc/pacman.d/hooks/95-systemd-boot.hook << 'EOF'
@@ -300,67 +184,6 @@ Description = Gracefully upgrading systemd-boot...
 When = PostTransaction
 Exec = /usr/bin/systemctl restart systemd-boot-update.service
 EOF
-
-# systemd-boot configuration
-tee /boot/loader/loader.conf << 'EOF'
-default  arch.conf
-timeout  0
-console-mode max
-editor   no
-EOF
-
-tee /boot/loader/entries/arch.conf << EOF
-title   Arch Linux
-linux   /vmlinuz-linux
-initrd  /${CPU_MICROCODE}.img
-initrd  /initramfs-linux.img
-options rd.luks.name=$(blkid -s UUID -o value /dev/nvme0n1p2)=system root=/dev/mapper/system rootflags=subvol=@ zswap.compressor=zstd zswap.max_pool_percent=10 nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
-EOF
-
-tee /boot/loader/entries/arch-lts.conf << EOF
-title   Arch Linux LTS
-linux   /vmlinuz-linux-lts
-initrd  /${CPU_MICROCODE}.img
-initrd  /initramfs-linux-lts.img
-options rd.luks.name=$(blkid -s UUID -o value /dev/nvme0n1p2)=system root=/dev/mapper/system rootflags=subvol=@ zswap.compressor=zstd zswap.max_pool_percent=10 nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
-EOF
-
-################################################
-##### Unlock LUKS with TPM2
-################################################
-
-# References:
-# https://wiki.archlinux.org/title/Trusted_Platform_Module#systemd-cryptenroll
-
-# Install TPM2-tools
-pacman -S --noconfirm tpm2-tools tpm2-tss
-
-# Configure initramfs to unlock the encrypted volume
-sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch.conf
-sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch-lts.conf
-
-################################################
-##### Secure boot
-################################################
-
-# References:
-# https://github.com/Foxboron/sbctl
-# https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Using_your_own_keys
-
-# Install sbctl
-pacman -S --noconfirm sbctl
-
-# Create secure boot signing keys
-sbctl create-keys
-
-# Enroll keys to EFI
-sbctl enroll-keys --microsoft
-
-# Sign files with secure boot keys
-sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
-sbctl sign -s /boot/EFI/systemd/systemd-bootx64.efi
-sbctl sign -s /boot/vmlinuz-linux
-sbctl sign -s /boot/vmlinuz-linux-lts
 
 ################################################
 ##### GPU
@@ -438,25 +261,6 @@ pacman -S --noconfirm \
     gst-plugins-ugly \
     gst-plugin-pipewire \
     gstreamer-vaapi
-
-################################################
-##### PipeWire
-################################################
-
-# References:
-# https://wiki.archlinux.org/title/PipeWire
-
-# Install PipeWire and WirePlumber
-pacman -S --noconfirm \
-    pipewire \
-    pipewire-alsa \
-    pipewire-jack \
-    pipewire-pulse \
-    libpulse \
-    wireplumber --ask 4
-
-# Enable PipeWire's user service
-sudo -u ${NEW_USER} systemctl --user enable pipewire-pulse.service
 
 ################################################
 ##### Flatpak
