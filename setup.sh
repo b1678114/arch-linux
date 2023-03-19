@@ -606,9 +606,9 @@ systemctl enable bluetooth.service
 
 # Install and configure desktop environment
 if [ ${DESKTOP_ENVIRONMENT} = "plasma" ]; then
-    /install-arch/plasma.sh
+    ./plasma.sh
 elif [ ${DESKTOP_ENVIRONMENT} = "gnome" ]; then
-    /install-arch/gnome.sh
+    ./gnome.sh
 fi
 
 # Hide applications from menus
@@ -631,7 +631,7 @@ done
 
 # Install and configure gaming with Flatpak
 if [ ${GAMING} = "yes" ]; then
-    /install-arch/gaming.sh
+    ./gaming.sh
 fi
 
 ################################################
