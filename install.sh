@@ -78,6 +78,6 @@ cp ./gaming.sh --tlsv1.2 -fsSL /mnt/archinstall/install-arch/gaming.sh
 curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/setup.sh -O
 cp ./setup.sh --tlsv1.2 -fsSL /mnt/archinstall/install-arch/setup.sh
 
-arch-chroot /mnt/archinstall/ /bin/bash /install-arch/setup.sh
+arch-chroot /mnt/archinstall/ /bin/bash /mnt/archinstall/install-arch/setup.sh
 rm -rf /mnt/archinstall/install-arch
 umount -R /mnt/archinstall
