@@ -70,14 +70,14 @@ genfstab -U /mnt >> /mnt/archinstall/etc/fstab
 
 mkdir -p /mnt/archinstall/install-arch
 curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/extra/firefox.js -O
-cp ./extra/firefox.js /install-arch/firefox.js
+cp ./extra/firefox.js /mnt/archinstall/install-arch/firefox.js
 curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gnome.sh -O
-cp ./gnome.sh /install-arch/gnome.sh
+cp ./gnome.sh /mnt/archinstall/install-arch/gnome.sh
 curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gaming.sh -O
-cp ./gaming.sh /install-arch/gaming.sh
+cp ./gaming.sh /mnt/archinstall/install-arch/gaming.sh
 curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/setup.sh -O
-cp ./setup.sh /install-arch/setup.sh
+cp ./setup.sh /mnt/archinstall/install-arch/setup.sh
 
 arch-chroot /mnt/archinstall/ /bin/bash /install-arch/setup.sh
-rm -rf /mnt/install-arch
+rm -rf /mnt/archinstall/install-arch
 umount -R /mnt
