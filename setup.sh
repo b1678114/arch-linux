@@ -452,9 +452,6 @@ flatpak install -y flathub org.gnome.Platform.Compat.i386/x86_64/43
 ##### Flatpak applications
 ################################################
 
-# Install Spotify
-flatpak install -y flathub com.spotify.Client
-
 # Install Discord
 flatpak install -y flathub com.discordapp.Discord
 
