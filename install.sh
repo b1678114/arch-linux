@@ -40,6 +40,15 @@ elif lspci | grep "VGA" | grep "AMD" > /dev/null; then
     export LIBVA_ENV_VAR="LIBVA_DRIVER_NAME=radeonsi"
 fi
 
+mkfs.vfat -F32 /dev/sda1
+mkswap /dev/sda2
+swapon /dev/sda2
+mkfs.ext4 /dev/sda3
+mkfs.ext4 /dev/sda4
+mount -m /dev/sda3 /mnt/archinstall
+mount -m /dev/sda1 /mnt/archinstall/boot
+mount -m /dev/sda4 /mnt/archinstall/home
+
 # Force pacman to refresh the package lists
 pacman -Syy
 
@@ -54,10 +63,10 @@ sed -i "s|^#ParallelDownloads.*|ParallelDownloads = 5|g" /etc/pacman.conf
 sed -i "/ParallelDownloads = 5/a ILoveCandy" /etc/pacman.conf
 
 # Install system
-pacstrap /mnt/archinstall base base-devel linux linux-lts linux-firmware btrfs-progs ${CPU_MICROCODE}
+pacstrap /mnt/archinstall base base-devel linux linux-lts linux-firmware ${CPU_MICROCODE}
 
 # Generate filesystem tab
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt >> /mnt/archinstall/etc/fstab
 
 mkdir -p /mnt/archinstall/install-arch
 curl https://raw.githubusercontent.com/gjpin/arch-linux/main/extra/firefox.js -O
