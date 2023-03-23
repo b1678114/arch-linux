@@ -40,11 +40,35 @@ elif lspci | grep "VGA" | grep "AMD" > /dev/null; then
     export LIBVA_ENV_VAR="LIBVA_DRIVER_NAME=radeonsi"
 fi
 
-mkdir /install-arch
+# Force pacman to refresh the package lists
+pacman -Syy
+
+# Initialize Pacman's keyring
+pacman-key --init
+pacman-key --populate
+
+# Configure Pacman
+sed -i "s|^#Color|Color|g" /etc/pacman.conf
+sed -i "s|^#VerbosePkgLists|VerbosePkgLists|g" /etc/pacman.conf
+sed -i "s|^#ParallelDownloads.*|ParallelDownloads = 5|g" /etc/pacman.conf
+sed -i "/ParallelDownloads = 5/a ILoveCandy" /etc/pacman.conf
+
+# Install system
+pacstrap /mnt/archinstall base base-devel linux linux-lts linux-firmware btrfs-progs ${CPU_MICROCODE}
+
+# Generate filesystem tab
+genfstab -U /mnt >> /mnt/etc/fstab
+
+mkdir -p /mnt/archinstall/install-arch
+curl https://raw.githubusercontent.com/gjpin/arch-linux/main/extra/firefox.js -O
 cp ./extra/firefox.js /install-arch/firefox.js
-cp ./plasma.sh /install-arch/plasma.sh
+curl https://raw.githubusercontent.com/gjpin/arch-linux/main/gnome.sh -O
 cp ./gnome.sh /install-arch/gnome.sh
+curl https://raw.githubusercontent.com/gjpin/arch-linux/main/gaming.sh -O
 cp ./gaming.sh /install-arch/gaming.sh
+curl https://raw.githubusercontent.com/gjpin/arch-linux/main/setup.sh -O
 cp ./setup.sh /install-arch/setup.sh
 
-./setup.sh
+arch-chroot /mnt/archinstall /bin/bash /install-arch/setup.sh
+rm -rf /mnt/install-arch
+umount -R /mnt
