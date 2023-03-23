@@ -69,15 +69,15 @@ pacstrap /mnt/archinstall base base-devel linux linux-lts linux-firmware ${CPU_M
 genfstab -U /mnt >> /mnt/archinstall/etc/fstab
 
 mkdir -p /mnt/archinstall/install-arch
-curl https://raw.githubusercontent.com/gjpin/arch-linux/main/extra/firefox.js -O
+curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/extra/firefox.js -O
 cp ./extra/firefox.js /install-arch/firefox.js
-curl https://raw.githubusercontent.com/gjpin/arch-linux/main/gnome.sh -O
+curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gnome.sh -O
 cp ./gnome.sh /install-arch/gnome.sh
-curl https://raw.githubusercontent.com/gjpin/arch-linux/main/gaming.sh -O
+curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gaming.sh -O
 cp ./gaming.sh /install-arch/gaming.sh
-curl https://raw.githubusercontent.com/gjpin/arch-linux/main/setup.sh -O
+curl https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/setup.sh -O
 cp ./setup.sh /install-arch/setup.sh
 
-arch-chroot /mnt/archinstall /bin/bash /install-arch/setup.sh
+arch-chroot /mnt/archinstall/ /bin/bash /install-arch/setup.sh
 rm -rf /mnt/install-arch
 umount -R /mnt
