@@ -66,11 +66,11 @@ sed -i "/ParallelDownloads = 5/a ILoveCandy" /etc/pacman.conf
 pacstrap /mnt/archinstall base base-devel linux linux-lts linux-firmware ${CPU_MICROCODE}
 
 # Generate filesystem tab
-genfstab -U /mnt >> /mnt/archinstall/etc/fstab
+genfstab -U /mnt/archinstall >> /mnt/archinstall/etc/fstab
 
 mkdir -p /mnt/archinstall/install-arch/extra
 curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/extra/firefox.js -O
-cp ./extra/firefox.js /mnt/archinstall/install-arch/firefox.js
+cp ./firefox.js /mnt/archinstall/install-arch/firefox.js
 curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gnome.sh -O
 cp ./gnome.sh /mnt/archinstall/install-arch/gnome.sh
 curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gaming.sh -O
