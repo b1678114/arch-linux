@@ -80,4 +80,4 @@ cp ./setup.sh /mnt/archinstall/install-arch/setup.sh
 
 arch-chroot /mnt/archinstall/ /bin/bash /install-arch/setup.sh
 rm -rf /mnt/archinstall/install-arch
-umount -R /mnt
+umount -R /mnt/archinstall
