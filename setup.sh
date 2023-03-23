@@ -1,8 +1,38 @@
 #!/usr/bin/bash
 
 ################################################
+##### Time
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/System_time#Time_zone
+# https://wiki.archlinux.org/title/Systemd-timesyncd
+
+# Enable systemd-timesyncd
+systemctl enable systemd-timesyncd.service
+
+# Set timezone
+ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+hwclock --systohc --utc
+
+################################################
+##### Locale and keymap
+################################################
+
+# Set locale
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+echo "LANG=\"en_US.UTF-8\"" > /etc/locale.conf
+locale-gen
+
+# Set keymap
+echo "KEYMAP=us" > /etc/vconsole.conf
+
+################################################
 ##### Hostname
 ################################################
+
+# Set hostname
+echo ${NEW_HOSTNAME} > /etc/hostname
 
 # Set /etc/hosts
 tee /etc/hosts << EOF
@@ -63,6 +93,71 @@ pacman -S --noconfirm \
     rsync
 
 ################################################
+##### Swap
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/Btrfs#Swap_file
+# https://wiki.archlinux.org/title/swap#Swappiness
+# https://wiki.archlinux.org/title/Improving_performance#zram_or_zswap
+# https://wiki.gentoo.org/wiki/Zram
+# https://www.dwarmstrong.org/zram-swap/
+# https://www.reddit.com/r/Fedora/comments/mzun99/new_zram_tuning_benchmarks/
+
+# Set swappiness
+echo 'vm.swappiness=30' > /etc/sysctl.d/99-swappiness.conf
+
+# Set vfs cache pressure
+echo 'vm.vfs_cache_pressure=50' > /etc/sysctl.d/99-vfs-cache-pressure.conf
+
+################################################
+##### Tweaks
+################################################
+
+# References:
+# https://github.com/CryoByte33/steam-deck-utilities/blob/main/docs/tweak-explanation.md
+# https://wiki.cachyos.org/en/home/General_System_Tweaks
+
+# Split Lock Mitigate - default: 1
+echo 'kernel.split_lock_mitigate=0' > /etc/sysctl.d/99-splitlock.conf
+
+# Compaction Proactiveness - default: 20
+echo 'vm.compaction_proactiveness=0' > /etc/sysctl.d/99-compaction_proactiveness.conf
+
+# Page Lock Unfairness - default: 5
+echo 'vm.page_lock_unfairness=1' > /etc/sysctl.d/99-page_lock_unfairness.conf
+
+# Hugepage Defragmentation - default: 1
+# Transparent Hugepages - default: always
+# Shared Memory in Transparent Hugepages - default: never
+tee /etc/systemd/system/kernel-tweaks.service << 'EOF'
+[Unit]
+Description=Set kernel tweaks
+After=multi-user.target
+StartLimitBurst=0
+
+[Service]
+Type=oneshot
+Restart=on-failure
+ExecStart=/usr/bin/bash -c 'echo always > /sys/kernel/mm/transparent_hugepage/enabled'
+ExecStart=/usr/bin/bash -c 'echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled'
+ExecStart=/usr/bin/bash -c 'echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag'
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable kernel-tweaks.service
+
+# Disable watchdog timer drivers
+# sudo dmesg | grep -e sp5100 -e iTCO -e wdt -e tco
+tee /etc/modprobe.d/disable-watchdog-drivers.conf << 'EOF'
+blacklist sp5100_tco
+blacklist iTCO_wdt
+blacklist iTCO_vendor_support
+EOF
+
+################################################
 ##### Users
 ################################################
 
@@ -74,7 +169,8 @@ echo "root:${NEW_USER_PASSWORD}" | chpasswd
 chsh -s /usr/bin/zsh
 
 # Setup user
-usermod -G wheel -s /usr/bin/zsh ${NEW_USER}
+useradd -m -G wheel -s /usr/bin/zsh ${NEW_USER}
+echo "${NEW_USER}:${NEW_USER_PASSWORD}" | chpasswd
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
 # Create XDG user directories
@@ -145,6 +241,10 @@ pacman -S --noconfirm firewalld
 systemctl enable firewalld.service
 firewall-offline-cmd --set-default-zone=block
 
+# Install and enable NetworkManager
+pacman -S --noconfirm networkmanager
+systemctl enable NetworkManager.service
+
 # Install bind tools
 pacman -S --noconfirm bind
 
@@ -156,8 +256,10 @@ pacman -S --noconfirm iptables-nft --ask 4
 ################################################
 
 # Configure mkinitcpio
-sed -i "s|MODULES=()|MODULES=(ext4${MKINITCPIO_MODULES})|" /etc/mkinitcpio.conf
+sed -i "s|MODULES=()|MODULES=(btrfs${MKINITCPIO_MODULES})|" /etc/mkinitcpio.conf
 sed -i "s|^HOOKS.*|HOOKS=(systemd autodetect keyboard sd-vconsole modconf block sd-encrypt filesystems fsck)|" /etc/mkinitcpio.conf
+sed -i "s|#COMPRESSION=\"zstd\"|COMPRESSION=\"zstd\"|" /etc/mkinitcpio.conf
+sed -i "s|#COMPRESSION_OPTIONS=()|COMPRESSION_OPTIONS=(-2)|" /etc/mkinitcpio.conf
 
 # Re-create initramfs image
 mkinitcpio -P
@@ -168,6 +270,9 @@ mkinitcpio -P
 
 # References:
 # https://wiki.archlinux.org/title/systemd-boot
+
+# Install systemd-boot to the ESP
+bootctl install
 
 # systemd-boot upgrade hook
 mkdir -p /etc/pacman.d/hooks
@@ -181,6 +286,30 @@ Target = systemd
 Description = Gracefully upgrading systemd-boot...
 When = PostTransaction
 Exec = /usr/bin/systemctl restart systemd-boot-update.service
+EOF
+
+# systemd-boot configuration
+tee /boot/loader/loader.conf << 'EOF'
+default  arch.conf
+timeout  0
+console-mode max
+editor   no
+EOF
+
+tee /boot/loader/entries/arch.conf << EOF
+title   Arch Linux
+linux   /vmlinuz-linux
+initrd  /${CPU_MICROCODE}.img
+initrd  /initramfs-linux.img
+options root=PARTUUID=$(blkid -s UUID -o value /dev/sda3) nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
+EOF
+
+tee /boot/loader/entries/arch-lts.conf << EOF
+title   Arch Linux LTS
+linux   /vmlinuz-linux-lts
+initrd  /${CPU_MICROCODE}.img
+initrd  /initramfs-linux-lts.img
+options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/sda3) nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
 EOF
 
 ################################################
@@ -261,6 +390,25 @@ pacman -S --noconfirm \
     gstreamer-vaapi
 
 ################################################
+##### PipeWire
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/PipeWire
+
+# Install PipeWire and WirePlumber
+pacman -S --noconfirm \
+    pipewire \
+    pipewire-alsa \
+    pipewire-jack \
+    pipewire-pulse \
+    libpulse \
+    wireplumber --ask 4
+
+# Enable PipeWire's user service
+sudo -u ${NEW_USER} systemctl --user enable pipewire-pulse.service
+
+################################################
 ##### Flatpak
 ################################################
 
@@ -303,6 +451,9 @@ flatpak install -y flathub org.gnome.Platform.Compat.i386/x86_64/43
 ################################################
 ##### Flatpak applications
 ################################################
+
+# Install Spotify
+flatpak install -y flathub com.spotify.Client
 
 # Install Discord
 flatpak install -y flathub com.discordapp.Discord
@@ -601,9 +752,9 @@ systemctl enable bluetooth.service
 
 # Install and configure desktop environment
 if [ ${DESKTOP_ENVIRONMENT} = "plasma" ]; then
-    ./plasma.sh
+    /install-arch/plasma.sh
 elif [ ${DESKTOP_ENVIRONMENT} = "gnome" ]; then
-    ./gnome.sh
+    /install-arch/gnome.sh
 fi
 
 # Hide applications from menus
@@ -626,7 +777,7 @@ done
 
 # Install and configure gaming with Flatpak
 if [ ${GAMING} = "yes" ]; then
-    ./gaming.sh
+    /install-arch/gaming.sh
 fi
 
 ################################################
