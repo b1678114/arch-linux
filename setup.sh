@@ -464,6 +464,11 @@ flatpak install -y flathub org.libreoffice.LibreOffice
 # Blender
 flatpak install -y flathub org.blender.Blender
 
+# Cider
+flatpak install flathub sh.cider.Cider
+
+# Flatseal
+flatpak install flathub com.github.tchx84.Flatseal
 ################################################
 ##### Syncthing
 ################################################
