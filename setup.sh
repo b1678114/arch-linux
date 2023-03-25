@@ -465,10 +465,10 @@ flatpak install -y flathub org.libreoffice.LibreOffice
 flatpak install -y flathub org.blender.Blender
 
 # Cider
-flatpak install flathub sh.cider.Cider
+flatpak install -y flathub sh.cider.Cider
 
 # Flatseal
-flatpak install flathub com.github.tchx84.Flatseal
+flatpak install -y flathub com.github.tchx84.Flatseal
 ################################################
 ##### Syncthing
 ################################################
