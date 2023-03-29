@@ -4,6 +4,9 @@
 ##### Set variables
 ################################################
 
+read -sp "LUKS password: " LUKS_PASSWORD
+export LUKS_PASSWORD
+
 read -p "Username: " NEW_USER
 export NEW_USER
 
@@ -40,14 +43,67 @@ elif lspci | grep "VGA" | grep "AMD" > /dev/null; then
     export LIBVA_ENV_VAR="LIBVA_DRIVER_NAME=radeonsi"
 fi
 
-mkfs.vfat -F32 /dev/sda1
-mkswap /dev/sda2
-swapon /dev/sda2
-mkfs.ext4 /dev/sda3
-mkfs.ext4 /dev/sda4
-mount -m /dev/sda3 /mnt/archinstall
-mount -m /dev/sda1 /mnt/archinstall/boot
-mount -m /dev/sda4 /mnt/archinstall/home
+################################################
+##### Partitioning
+################################################
+
+# References:
+# https://www.rodsbooks.com/gdisk/sgdisk-walkthrough.html
+# https://www.dwarmstrong.org/archlinux-install/
+
+# Delete old partition layout and re-read partition table
+wipefs -af /dev/nvme0n1
+sgdisk --zap-all --clear /dev/nvme0n1
+partprobe /dev/nvme0n1
+
+# Partition disk and re-read partition table
+sgdisk -n 1:0:+512MiB -t 1:ef00 -c 1:EFI /dev/sda1
+sgdisk -n 2:0:0 -t 2:8309 -c 2:LUKS /dev/sda1
+partprobe /dev/sda1
+
+################################################
+##### LUKS / BTRFS
+################################################
+
+# Encrypt and open LUKS partition
+echo ${LUKS_PASSWORD} | cryptsetup --type luks2 --hash sha512 --use-random luksFormat /dev/disk/by-partlabel/LUKS
+echo ${LUKS_PASSWORD} | cryptsetup luksOpen /dev/disk/by-partlabel/LUKS system
+
+# Create BTRFS
+mkfs.btrfs -L system /dev/mapper/system
+
+# Mount root device
+mount -t btrfs LABEL=system /mnt
+
+# Create BTRFS subvolumes
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+btrfs subvolume create /mnt/@swap
+umount -R /mnt
+
+# Mount BTRFS subvolumes
+mount -t btrfs -o subvol=@,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt
+
+mkdir -p /mnt/home
+mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt/home
+
+mkdir -p /mnt/swap
+mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
+
+################################################
+##### EFI / Boot
+################################################
+
+# Format and mount EFI/boot partition
+mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI
+mount --mkdir /dev/nvme0n1p1 /mnt/boot
+
+################################################
+##### Pre-game Pacman
+################################################
+
+# Import mirrorlist
+cp ./extra/mirrorlist /etc/pacman.d/mirrorlist
 
 # Force pacman to refresh the package lists
 pacman -Syy
@@ -62,27 +118,31 @@ sed -i "s|^#VerbosePkgLists|VerbosePkgLists|g" /etc/pacman.conf
 sed -i "s|^#ParallelDownloads.*|ParallelDownloads = 5|g" /etc/pacman.conf
 sed -i "/ParallelDownloads = 5/a ILoveCandy" /etc/pacman.conf
 
+################################################
+##### Install system
+################################################
+
 # Install system
-pacstrap /mnt/archinstall base base-devel linux linux-lts linux-firmware ${CPU_MICROCODE}
+pacstrap /mnt base base-devel linux linux-lts linux-firmware btrfs-progs ${CPU_MICROCODE}
 
 # Generate filesystem tab
-genfstab -U /mnt/archinstall >> /mnt/archinstall/etc/fstab
+genfstab -U /mnt >> /mnt/etc/fstab
 
-mkdir -p /mnt/archinstall/install-arch/extra
+mkdir -p /mnt/install-arch/extra
 curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/extra/firefox.js -O
-cp ./firefox.js /mnt/archinstall/install-arch/firefox.js
-chmod 0755 /mnt/archinstall/install-arch/firefox.js
+cp ./firefox.js /mnt/install-arch/firefox.js
+chmod 0755 /mnt/install-arch/firefox.js
 curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gnome.sh -O
-cp ./gnome.sh /mnt/archinstall/install-arch/gnome.sh
-chmod 0755 /mnt/archinstall/install-arch/gnome.sh
+cp ./gnome.sh /mnt/install-arch/gnome.sh
+chmod 0755 /mnt/install-arch/gnome.sh
 curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/gaming.sh -O
-cp ./gaming.sh /mnt/archinstall/install-arch/gaming.sh
-chmod 0755 /mnt/archinstall/install-arch/gaming.sh
+cp ./gaming.sh /mnt/install-arch/gaming.sh
+chmod 0755 /mnt/install-arch/gaming.sh
 curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/setup.sh -O
-cp ./setup.sh /mnt/archinstall/install-arch/setup.sh
-chmod 0755 /mnt/archinstall/install-arch/setup.sh
+cp ./setup.sh /mnt/install-arch/setup.sh
+chmod 0755 /mnt/install-arch/setup.sh
 
-arch-chroot /mnt/archinstall/ /bin/bash /install-arch/setup.sh
-rm -rf /mnt/archinstall/install-arch
-umount -R /mnt/archinstall
+arch-chroot /mnt/ /bin/bash /install-arch/setup.sh
+rm -rf /mnt/install-arch
+umount -R /mnt
 swapoff -a
