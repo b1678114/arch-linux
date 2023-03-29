@@ -104,6 +104,19 @@ pacman -S --noconfirm \
 # https://www.dwarmstrong.org/zram-swap/
 # https://www.reddit.com/r/Fedora/comments/mzun99/new_zram_tuning_benchmarks/
 
+# Create swap file
+btrfs filesystem mkswapfile --size 40g /swap/swapfile
+
+# Activate swap file
+swapon /swap/swapfile
+
+# Add swapfile to fstab configuration
+tee -a /etc/fstab << EOF
+
+# swap file
+/swap/swapfile                              none        swap    defaults                                                                                                0 0
+EOF
+
 # Set swappiness
 echo 'vm.swappiness=30' > /etc/sysctl.d/99-swappiness.conf
 
@@ -301,7 +314,7 @@ title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /${CPU_MICROCODE}.img
 initrd  /initramfs-linux.img
-options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/sda3) nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
+options rd.luks.name=$(blkid -s UUID -o value /dev/sda2)=system root=/dev/mapper/system rootflags=subvol=@ zswap.compressor=zstd zswap.max_pool_percent=10 nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
 EOF
 
 tee /boot/loader/entries/arch-lts.conf << EOF
@@ -309,8 +322,45 @@ title   Arch Linux LTS
 linux   /vmlinuz-linux-lts
 initrd  /${CPU_MICROCODE}.img
 initrd  /initramfs-linux-lts.img
-options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/sda3) nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
+options rd.luks.name=$(blkid -s UUID -o value /dev/sda2)=system root=/dev/mapper/system rootflags=subvol=@ zswap.compressor=zstd zswap.max_pool_percent=10 nowatchdog quiet loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0 splash rw
 EOF
+
+################################################
+##### Unlock LUKS with TPM2
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/Trusted_Platform_Module#systemd-cryptenroll
+
+# Install TPM2-tools
+pacman -S --noconfirm tpm2-tools tpm2-tss
+
+# Configure initramfs to unlock the encrypted volume
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-device=auto|" /boot/loader/entries/arch.conf
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-device=auto|" /boot/loader/entries/arch-lts.conf
+
+################################################
+##### Secure boot
+################################################
+
+# References:
+# https://github.com/Foxboron/sbctl
+# https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Using_your_own_keys
+
+# Install sbctl
+pacman -S --noconfirm sbctl
+
+# Create secure boot signing keys
+sbctl create-keys
+
+# Enroll keys to EFI
+sbctl enroll-keys --microsoft
+
+# Sign files with secure boot keys
+sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
+sbctl sign -s /boot/EFI/systemd/systemd-bootx64.efi
+sbctl sign -s /boot/vmlinuz-linux
+sbctl sign -s /boot/vmlinuz-linux-lts
 
 ################################################
 ##### GPU
@@ -452,6 +502,9 @@ flatpak install -y flathub org.gnome.Platform.Compat.i386/x86_64/43
 ##### Flatpak applications
 ################################################
 
+# Install Spotify
+flatpak install -y flathub com.spotify.Client
+
 # Install Discord
 flatpak install -y flathub com.discordapp.Discord
 
@@ -464,11 +517,6 @@ flatpak install -y flathub org.libreoffice.LibreOffice
 # Blender
 flatpak install -y flathub org.blender.Blender
 
-# Cider
-flatpak install -y flathub sh.cider.Cider
-
-# Flatseal
-flatpak install -y flathub com.github.tchx84.Flatseal
 ################################################
 ##### Syncthing
 ################################################
