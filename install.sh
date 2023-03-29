@@ -52,9 +52,9 @@ fi
 # https://www.dwarmstrong.org/archlinux-install/
 
 # Delete old partition layout and re-read partition table
-wipefs -af /dev/nvme0n1
-sgdisk --zap-all --clear /dev/nvme0n1
-partprobe /dev/nvme0n1
+wipefs -af /dev/sda1
+sgdisk --zap-all --clear /dev/sda1
+partprobe /dev/sda1
 
 # Partition disk and re-read partition table
 sgdisk -n 1:0:+512MiB -t 1:ef00 -c 1:EFI /dev/sda1
