@@ -303,8 +303,8 @@ EOF
 
 # systemd-boot configuration
 tee /boot/loader/loader.conf << 'EOF'
-default  arch.conf
-timeout  0
+default  arch-lts.conf
+timeout  3
 console-mode max
 editor   no
 EOF
