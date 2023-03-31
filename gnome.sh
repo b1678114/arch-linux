@@ -132,8 +132,8 @@ rm -f shell-extension.zip
 # ArcMenu
 # https://extensions.gnome.org/extension/3628/arcmenu/
 curl -sSL https://extensions.gnome.org/extension-data/arcmenuarcmenu.com.v44.shell-extension.zip -o shell-extension.zip
-mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenuarcmenu.com
-unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenuarcmenu.com
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenu@arcmenu.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenu@arcmenu.com
 rm -f shell-extension.zip
 
 # Blur my Shell
@@ -143,6 +143,19 @@ mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/blur-my-shell@aun
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/blur-my-shell@aunetx
 rm -f shell-extension.zip
 
+# Clipboard History
+# https://extensions.gnome.org/extension/4839/clipboard-history/
+curl -sSL https://extensions.gnome.org/extension-data/clipboard-historyalexsaveau.dev.v25.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/clipboard-history@alexsaveau.dev
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/clipboard-history@alexsaveau.dev
+rm -f shell-extension.zip
+
+# Custom Accent Colors
+# https://extensions.gnome.org/extension/5547/custom-accent-colors/
+curl -sSL https://extensions.gnome.org/extension-data/custom-accent-colorsdemiskp.v5.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/custom-accent-colors@demiskp
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/custom-accent-colors@demiskp
+rm -f shell-extension.zip
 
 
 ################################################
@@ -322,7 +335,7 @@ disable-user-extensions=false
 favorite-apps=['org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'code.desktop']
 
 [org/gnome/shell]
-enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenuarcmenu.com', 'blur-my-shell@aunetx']
+enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'clipboard-history@alexsaveau.dev', 'custom-accent-colors@demiskp']
 
 [org/gnome/shell/extensions/dark-variant]
 applications=['code.desktop', 'code-oss.desktop', 'visual-studio-code.desktop', 'rest.insomnia.Insomnia.desktop', 'io.podman_desktop.PodmanDesktop.desktop', 'com.spotify.Client.desktop', 'org.gimp.GIMP.desktop', 'com.heroicgameslauncher.hgl.desktop', 'md.obsidian.Obsidian.desktop', 'obsidian.desktop', 'godot.desktop', 'org.godotengine.Godot.desktop', 'org.blender.Blender.desktop' ,'blender.desktop', 'com.discordapp.Discord.desktop']
