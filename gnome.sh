@@ -387,7 +387,7 @@ titlebar-font='Noto Sans Bold 10'
 disable-user-extensions=false
 
 [org/gnome/shell]
-favorite-apps=['org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'code.desktop']
+favorite-apps=['org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop']
 
 [org/gnome/shell]
 enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'clipboard-history@alexsaveau.dev', 'custom-accent-colors@demiskp', 'dash-to-panel@jderose9.github.com', 'ding@rastersoft.com', 'gamemode@christian.kellner.me', 'quick-settings-tweaks@qwreey', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'wireless-hid@chlumskyvaclav.gmail.com' ]
