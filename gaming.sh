@@ -20,6 +20,14 @@ echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
 sudo pacman -Syy
 
 ################################################
+##### MangoHud
+################################################
+# References:
+# None yet
+
+sudo -u ${NEW_USER} paru -S --noconfirm goverlay-bin
+
+################################################
 ##### Get headers for Nvidia to use DKMS
 ################################################
 
@@ -37,14 +45,6 @@ cd nvidia-all
 sudo -u ${NEW_USER} makepkg -si
 cd ..
 rm -rf nvidia-all
-
-################################################
-##### MangoHud
-################################################
-# References:
-# None yet
-
-sudo -u ${NEW_USER} paru -S --noconfirm goverlay-bin
 
 ################################################
 ##### Steam
