@@ -1,4 +1,12 @@
 #!/usr/bin/bash
+
+################################################
+##### Variable Check
+################################################
+
+read -p "Username: " NEW_USER
+export NEW_USER
+
 ################################################
 ##### Enable multilib repository
 ################################################
@@ -10,6 +18,19 @@ echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
 
 # update packagelists
 sudo pacman -Syy
+
+################################################
+##### Nvidia Installer
+################################################
+# References:
+# None yet
+
+git clone https://github.com/Frogging-Family/nvidia-all
+chown -R ${NEW_USER}:${NEW_USER} nvidia-all
+cd nvidia-all
+sudo -u ${NEW_USER} makepkg -si
+cd ..
+rm -rf nvidia-all
 
 ################################################
 ##### MangoHud
