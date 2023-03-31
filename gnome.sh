@@ -129,6 +129,22 @@ mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/legacyschemeautos
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/legacyschemeautoswitcher@joshimukul29.gmail.com
 rm -f shell-extension.zip
 
+# ArcMenu
+# https://extensions.gnome.org/extension/3628/arcmenu/
+curl -sSL https://extensions.gnome.org/extension-data/arcmenuarcmenu.com.v44.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenuarcmenu.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenuarcmenu.com
+rm -f shell-extension.zip
+
+# Blur my Shell
+# https://extensions.gnome.org/extension/3193/blur-my-shell/
+curl -sSL https://extensions.gnome.org/extension-data/blur-my-shellaunetx.v45.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/blur-my-shell@aunetx
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/blur-my-shell@aunetx
+rm -f shell-extension.zip
+
+
+
 ################################################
 ##### Better Qt / GTK integration
 ################################################
@@ -306,7 +322,7 @@ disable-user-extensions=false
 favorite-apps=['org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'code.desktop']
 
 [org/gnome/shell]
-enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com']
+enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenuarcmenu.com', 'blur-my-shell@aunetx']
 
 [org/gnome/shell/extensions/dark-variant]
 applications=['code.desktop', 'code-oss.desktop', 'visual-studio-code.desktop', 'rest.insomnia.Insomnia.desktop', 'io.podman_desktop.PodmanDesktop.desktop', 'com.spotify.Client.desktop', 'org.gimp.GIMP.desktop', 'com.heroicgameslauncher.hgl.desktop', 'md.obsidian.Obsidian.desktop', 'obsidian.desktop', 'godot.desktop', 'org.godotengine.Godot.desktop', 'org.blender.Blender.desktop' ,'blender.desktop', 'com.discordapp.Discord.desktop']
