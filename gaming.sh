@@ -13,7 +13,12 @@ export NEW_USER
 # References:
 # None yet
 
-sudo -u ${NEW_USER} paru goverlay-bin
+git clone https://github.com/benjamimgois/goverlay.git
+chown -R ${NEW_USER}:${NEW_USER} ./goverlay
+cd ./goverlay
+sudo -u ${NEW_USER} makepkg -si
+cd ..
+rm -rf ./goverlay
 
 ################################################
 ##### Enable multilib repository
