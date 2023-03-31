@@ -8,6 +8,14 @@ read -p "Username: " NEW_USER
 export NEW_USER
 
 ################################################
+##### MangoHud
+################################################
+# References:
+# None yet
+
+sudo -u ${NEW_USER} paru goverlay-bin
+
+################################################
 ##### Enable multilib repository
 ################################################
 # References:
@@ -18,14 +26,6 @@ echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
 
 # update packagelists
 sudo pacman -Syy
-
-################################################
-##### MangoHud
-################################################
-# References:
-# None yet
-
-sudo -u ${NEW_USER} paru -S --noconfirm goverlay-bin
 
 ################################################
 ##### Get headers for Nvidia to use DKMS
