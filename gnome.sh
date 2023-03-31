@@ -157,6 +157,33 @@ mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/custom-accent-col
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/custom-accent-colors@demiskp
 rm -f shell-extension.zip
 
+# Dash to Panel
+# https://extensions.gnome.org/extension/1160/dash-to-panel/
+curl -sSL https://extensions.gnome.org/extension-data/dash-to-paneljderose9.github.com.v56.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com
+rm -f shell-extension.zip
+
+# Desktop Icons NG (DING)
+# https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding/
+curl -sSL https://extensions.gnome.org/extension-data/dingrastersoft.com.v54.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/ding@rastersoft.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/ding@rastersoft.com
+rm -f shell-extension.zip
+
+# GameMode
+# https://extensions.gnome.org/extension/1852/gamemode/
+curl -sSL https://extensions.gnome.org/extension-data/gamemodechristian.kellner.me.v7.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/gamemode@christian.kellner.me
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/gamemode@christian.kellner.me
+rm -f shell-extension.zip
+
+# Quick Settings Tweaker
+# https://extensions.gnome.org/extension/5446/quick-settings-tweaker/
+curl -sSL https://extensions.gnome.org/extension-data/quick-settings-tweaksqwreey.v17.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/quick-settings-tweaks@qwreey
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/quick-settings-tweaks@qwreey
+rm -f shell-extension.zip
 
 ################################################
 ##### Better Qt / GTK integration
@@ -335,7 +362,7 @@ disable-user-extensions=false
 favorite-apps=['org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'code.desktop']
 
 [org/gnome/shell]
-enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'clipboard-history@alexsaveau.dev', 'custom-accent-colors@demiskp']
+enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'clipboard-history@alexsaveau.dev', 'custom-accent-colors@demiskp', 'dash-to-panel@jderose9.github.com', 'ding@rastersoft.com', 'gamemode@christian.kellner.me', 'quick-settings-tweaks@qwreey' ]
 
 [org/gnome/shell/extensions/dark-variant]
 applications=['code.desktop', 'code-oss.desktop', 'visual-studio-code.desktop', 'rest.insomnia.Insomnia.desktop', 'io.podman_desktop.PodmanDesktop.desktop', 'com.spotify.Client.desktop', 'org.gimp.GIMP.desktop', 'com.heroicgameslauncher.hgl.desktop', 'md.obsidian.Obsidian.desktop', 'obsidian.desktop', 'godot.desktop', 'org.godotengine.Godot.desktop', 'org.blender.Blender.desktop' ,'blender.desktop', 'com.discordapp.Discord.desktop']
