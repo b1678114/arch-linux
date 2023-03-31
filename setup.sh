@@ -401,13 +401,6 @@ pacman -S --noconfirm vulkan-tools
 pacman -S --noconfirm ffmpeg
 
 ################################################
-##### prime-run
-################################################
-
-# Install prime-run command via nvidia-prime
-pacman -S --noconfirm nvidia-prime
-
-################################################
 ##### systemd
 ################################################
 
