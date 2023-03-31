@@ -185,6 +185,34 @@ mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/quick-settings-tw
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/quick-settings-tweaks@qwreey
 rm -f shell-extension.zip
 
+# supergfxctl-gex 
+# https://extensions.gnome.org/extension/5344/supergfxctl-gex/
+curl -sSL https://extensions.gnome.org/extension-data/supergfxctl-gexasus-linux.org.v22.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/supergfxctl-gex@asus-linux.org
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/supergfxctl-gex@asus-linux.org
+rm -f shell-extension.zip
+
+# User Themes
+# https://extensions.gnome.org/extension/19/user-themes/
+curl -sSL https://extensions.gnome.org/extension-data/user-themegnome-shell-extensions.gcampax.github.com.v50.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com
+rm -f shell-extension.zip
+
+# Wireless HID
+# https://extensions.gnome.org/extension/4228/wireless-hid/
+curl -sSL https://extensions.gnome.org/extension-data/wireless-hidchlumskyvaclav.gmail.com.v11.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/wireless-hid@chlumskyvaclav.gmail.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/wireless-hid@chlumskyvaclav.gmail.com
+rm -f shell-extension.zip
+
+# Dash to Dock
+# https://extensions.gnome.org/extension/307/dash-to-dock/
+curl -sSL https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v79.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com
+rm -f shell-extension.zip
+
 ################################################
 ##### Better Qt / GTK integration
 ################################################
@@ -362,7 +390,7 @@ disable-user-extensions=false
 favorite-apps=['org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'code.desktop']
 
 [org/gnome/shell]
-enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'clipboard-history@alexsaveau.dev', 'custom-accent-colors@demiskp', 'dash-to-panel@jderose9.github.com', 'ding@rastersoft.com', 'gamemode@christian.kellner.me', 'quick-settings-tweaks@qwreey' ]
+enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'clipboard-history@alexsaveau.dev', 'custom-accent-colors@demiskp', 'dash-to-panel@jderose9.github.com', 'ding@rastersoft.com', 'gamemode@christian.kellner.me', 'quick-settings-tweaks@qwreey', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'wireless-hid@chlumskyvaclav.gmail.com' ]
 
 [org/gnome/shell/extensions/dark-variant]
 applications=['code.desktop', 'code-oss.desktop', 'visual-studio-code.desktop', 'rest.insomnia.Insomnia.desktop', 'io.podman_desktop.PodmanDesktop.desktop', 'com.spotify.Client.desktop', 'org.gimp.GIMP.desktop', 'com.heroicgameslauncher.hgl.desktop', 'md.obsidian.Obsidian.desktop', 'obsidian.desktop', 'godot.desktop', 'org.godotengine.Godot.desktop', 'org.blender.Blender.desktop' ,'blender.desktop', 'com.discordapp.Discord.desktop']
