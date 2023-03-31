@@ -78,3 +78,10 @@ cd grapejuice-git
 sudo -u ${NEW_USER} makepkg -si --noconfirm
 cd ..
 rm -rf grapejuice-git
+
+################################################
+##### prime-run
+################################################
+
+# Install prime-run command via nvidia-prime
+pacman -S --noconfirm nvidia-prime
