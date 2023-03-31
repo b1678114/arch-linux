@@ -20,6 +20,12 @@ echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
 sudo pacman -Syy
 
 ################################################
+##### Get headers for Nvidia to use DKMS
+################################################
+
+sudo pacman -S --noconfirm linux-headers linux-lts-headers
+
+################################################
 ##### Nvidia Installer
 ################################################
 # References:
