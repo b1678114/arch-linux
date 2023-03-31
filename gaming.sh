@@ -16,6 +16,7 @@ export NEW_USER
 git clone https://github.com/benjamimgois/goverlay.git
 chown -R ${NEW_USER}:${NEW_USER} ./goverlay
 cd ./goverlay
+sudo -u ${NEW_USER} make
 sudo -u ${NEW_USER} make install
 cd ..
 rm -rf ./goverlay
