@@ -1,19 +1,31 @@
 #!/usr/bin/bash
+################################################
+##### Enable multilib repository
+################################################
+# References:
+# None yet
+
+# enable multilib by addition
+echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
+
+# update packagelists
+sudo pacman -Syy
 
 ################################################
 ##### MangoHud
 ################################################
-sudo -u ${NEW_USER} paru -S --noconfirm goverlay-bin
 # References:
 # None yet
+
+sudo -u ${NEW_USER} paru -S --noconfirm goverlay-bin
 
 ################################################
 ##### Steam
 ################################################
-
-pacman -S --noconfirm steam
 # References:
 # None yet
+
+pacman -S --noconfirm steam
 
 # Steam controllers udev rules
 curl -sSL https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/60-steam-input.rules -o /etc/udev/rules.d/60-steam-input.rules
