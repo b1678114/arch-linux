@@ -8,20 +8,6 @@ read -p "Username: " NEW_USER
 export NEW_USER
 
 ################################################
-##### MangoHud
-################################################
-# References:
-# None yet
-
-git clone https://github.com/benjamimgois/goverlay.git
-chown -R ${NEW_USER}:${NEW_USER} ./goverlay
-cd ./goverlay
-sudo -u ${NEW_USER} make
-sudo -u ${NEW_USER} make install
-cd ..
-rm -rf ./goverlay
-
-################################################
 ##### Enable multilib repository
 ################################################
 # References:
@@ -51,6 +37,46 @@ cd nvidia-all
 sudo -u ${NEW_USER} makepkg -si
 cd ..
 rm -rf nvidia-all
+
+################################################
+##### MangoHud
+################################################
+# References:
+# None yet
+
+# Download and install latest mangohud release
+cd
+mkdir mangohud-custom
+cd mangohud-custom
+tee ./PKGBUILD << EOF
+pkgname=mangohud-custom
+pkgver=1
+pkgrel=1
+pkgdesc="Custom package for MangoHud"
+arch=('x86_64')
+url="https://github.com/flightlessmango/MangoHud"
+license=('MIT')
+depends=()
+provides=("mangohud=$pkgver")
+conflicts=('mangohud')
+
+build() {
+  URL=$(curl -s https://api.github.com/repos/flightlessmango/MangoHud/releases/latest | awk -F\" '/browser_download_url.*.tar.gz/{print $(NF-1)}')
+  curl --tlsv1.2 -fsSL ${URL} -o MangoHud.tar.gz
+  tar -xf MangoHud.tar.gz -C ./
+}
+
+package() {
+  cd "./MangoHud"
+  sudo -u ${NEW_USER} sh mangohud-setup.sh install
+}
+EOF
+sudo -u ${NEW_USER} makepkg -si --noconfirm
+cd ..
+rm -rf ./MangoHud
+
+# Download and install goverlay
+sudo -u ${NEW_USER} paru -S --noconfirm goverlay-bin
 
 ################################################
 ##### Steam
