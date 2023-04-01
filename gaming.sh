@@ -54,9 +54,6 @@ flatpak install -y flathub com.heroicgameslauncher.hgl
 # Lutris
 flatpak install -y flathub net.lutris.Lutris
 
-# ProtonUp-Qt
-flatpak install -y flathub net.davidotek.pupgui2
-
 ################################################
 ##### Roblox launcher
 ################################################
