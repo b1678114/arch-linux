@@ -1,4 +1,9 @@
-install mangohud and goverlay
+#!/usr/bin/bash
+
+####################################
+#### install mangohud and goverlay
+####################################
+
 sudo -u view paru -S --noconfirm mangohud
 sudo -u view paru -S --noconfirm goverlay
 
