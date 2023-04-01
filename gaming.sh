@@ -81,3 +81,6 @@ pacman -S --noconfirm nvidia-prime
 
 # Issue #1 the overlay script only seems to work after system is rebooted into GUI or something, 
 ehco "please reboot, log in and run cd && ./overlay.sh
+curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel/overlay.sh -O
+cp ./overlay.sh /home/{NEW_USER}/overlay.sh
+chmod 0755 /home/{NEW_USER}/overlay.sh
