@@ -269,7 +269,7 @@ pacman -S --noconfirm iptables-nft --ask 4
 ################################################
 
 # Configure mkinitcpio
-sed -i "s|MODULES=()|MODULES=(btrfs ${MKINITCPIO_MODULES})|" /etc/mkinitcpio.conf
+sed -i "s|MODULES=()|MODULES=(btrfs nvidia nvidia_modeset nvidia_uvm nvidia_drm ${MKINITCPIO_MODULES})|" /etc/mkinitcpio.conf
 sed -i "s|^HOOKS.*|HOOKS=(systemd autodetect keyboard sd-vconsole modconf block sd-encrypt filesystems fsck)|" /etc/mkinitcpio.conf
 sed -i "s|#COMPRESSION=\"zstd\"|COMPRESSION=\"zstd\"|" /etc/mkinitcpio.conf
 sed -i "s|#COMPRESSION_OPTIONS=()|COMPRESSION_OPTIONS=(-2)|" /etc/mkinitcpio.conf
