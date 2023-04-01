@@ -1,6 +1,16 @@
 #!/usr/bin/bash
 
 ################################################
+##### Set variables
+################################################
+
+read -sp "LUKS password: " LUKS_PASSWORD
+export LUKS_PASSWORD
+
+read -p "Username: " NEW_USER
+export NEW_USER
+
+################################################
 ##### Enable Chaotic AUR repository
 ################################################
 # References: 
