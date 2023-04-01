@@ -39,46 +39,6 @@ cd ..
 rm -rf nvidia-all
 
 ################################################
-##### Latest MangoHud binary & GOverlay binary
-################################################
-# References:
-# None yet
-
-# Download and install latest mangohud release
-cd
-mkdir mangohud-custom
-cd mangohud-custom
-tee ./PKGBUILD << EOF
-pkgname=mangohud-custom
-pkgver=1
-pkgrel=1
-pkgdesc="Custom package for MangoHud"
-arch=('x86_64')
-url="https://github.com/flightlessmango/MangoHud"
-license=('MIT')
-depends=()
-provides=("mangohud=$pkgver")
-conflicts=('mangohud')
-
-build() {
-  URL=$(curl -s https://api.github.com/repos/flightlessmango/MangoHud/releases/latest | awk -F\" '/browser_download_url.*.tar.gz/{print $(NF-1)}')
-  curl --tlsv1.2 -fsSL ${URL} -o MangoHud.tar.gz
-  tar -xf MangoHud.tar.gz -C ./
-}
-
-package() {
-  cd "./MangoHud"
-  sudo -u ${NEW_USER} sh mangohud-setup.sh install
-}
-EOF
-sudo -u ${NEW_USER} makepkg -si --noconfirm
-cd ..
-rm -rf ./MangoHud
-
-# Download and install goverlay
-sudo -u ${NEW_USER} paru -S --noconfirm goverlay-bin
-
-################################################
 ##### Steam
 ################################################
 # References:
@@ -104,12 +64,12 @@ flatpak install -y flathub net.lutris.Lutris
 ##### Roblox launcher
 ################################################
 
-git clone --depth=1 https://aur.archlinux.org/grapejuice-git.git /grapejuice-git
-chown -R ${NEW_USER}:${NEW_USER} grapejuice-git
-cd grapejuice-git
+git clone --depth=1 https://aur.archlinux.org/grapejuice-git.git ./grapejuice-git
+chown -R ${NEW_USER}:${NEW_USER} ./grapejuice-git
+cd ./grapejuice-git
 sudo -u ${NEW_USER} makepkg -si --noconfirm
 cd ..
-rm -rf grapejuice-git
+rm -rf ./grapejuice-git
 
 ################################################
 ##### prime-run
