@@ -11,7 +11,7 @@ export NEW_USER
 ##### Enable multilib repository
 ################################################
 # References: 
-# none yet, need multi lib because we are not going with flatpak steam
+# none yet, need multi lib because we are not going with flatpak steam and we need them for our nvidia driver
 
 # enable multilib by addition
 echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
