@@ -1,13 +1,6 @@
 #!/usr/bin/bash
 
 ################################################
-##### Variable Check
-################################################
-
-read -p "Username: " NEW_USER
-export NEW_USER
-
-################################################
 ##### Enable multilib repository
 ################################################
 # References: 
@@ -52,7 +45,7 @@ curl -sSL https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/6
 udevadm control --reload-rules
 
 ################################################
-##### Other game launchers
+##### Other game launchers and Compatibity Tools
 ################################################
 
 # Heroic Games Launcher
@@ -60,6 +53,9 @@ flatpak install -y flathub com.heroicgameslauncher.hgl
 
 # Lutris
 flatpak install -y flathub net.lutris.Lutris
+
+# ProtonUp-Qt
+flatpak install -y flathub net.davidotek.pupgui2
 
 ################################################
 ##### Roblox launcher
