@@ -39,7 +39,7 @@ cd ..
 rm -rf nvidia-all
 
 ################################################
-##### MangoHud
+##### Latest MangoHud binary & GOverlay binary
 ################################################
 # References:
 # None yet
