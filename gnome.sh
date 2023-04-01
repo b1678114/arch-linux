@@ -131,6 +131,7 @@ rm -f shell-extension.zip
 
 # ArcMenu
 # https://extensions.gnome.org/extension/3628/arcmenu/
+pacman -S --noconfirm gmenu
 curl -sSL https://extensions.gnome.org/extension-data/arcmenuarcmenu.com.v44.shell-extension.zip -o shell-extension.zip
 mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenu@arcmenu.com
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/arcmenu@arcmenu.com
