@@ -232,7 +232,7 @@ sudo paru -Syy
 ##### Get pop-shell gnome extension
 ################################################
 
-sudo -u ${NEW_USER} paru -S --noconfirm pop-shell-plugin-system76-power-git
+sudo -u ${NEW_USER} paru -S --noconfirm gnome-shell-extension-pop-shell-git
 
 # undo the CAUR again for now
 sudo sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
