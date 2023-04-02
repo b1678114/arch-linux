@@ -97,8 +97,8 @@ sudo paru -Syy
 ##### Get mangohud and goverlay
 ################################################
 
-sudo -u view paru -S --noconfirm mangohud
-sudo -u view paru -S --noconfirm goverlay
+sudo -u ${NEW_USER} paru -S --noconfirm mangohud
+sudo -u ${NEW_USER} -S --noconfirm goverlay
 
 # undo the CAUR again for now
 sudo sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
