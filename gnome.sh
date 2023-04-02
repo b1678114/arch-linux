@@ -210,6 +210,9 @@ mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-dock@micx
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com
 rm -f shell-extension.zip
 
+# Pop-shell extension, for occasional tilling ++
+# https://aur.archlinux.org/packages/gnome-shell-extension-system76-power-git
+sudo -u paru ${NEW_USER} -S --noconfirm gnome-shell-extension-system76-power-git
 ################################################
 ##### Better Qt / GTK integration
 ################################################
