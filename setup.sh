@@ -72,6 +72,8 @@ pacman -S --noconfirm zsh zsh-completions grml-zsh-config zsh-autosuggestions zs
 pacman -S --noconfirm \
     coreutils \
     htop \
+    bashtop \
+    nvtop \
     git \
     p7zip \
     ripgrep \
