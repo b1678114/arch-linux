@@ -171,10 +171,6 @@ mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/gamemode@christia
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/gamemode@christian.kellner.me
 rm -f shell-extension.zip
 
-# pop-shell
-#
-sudo -u view paru -S --noconfirm pop-shell-plugin-system76-power-git
-
 # Quick Settings Tweaker
 # https://extensions.gnome.org/extension/5446/quick-settings-tweaker/
 curl -sSL https://extensions.gnome.org/extension-data/quick-settings-tweaksqwreey.v17.shell-extension.zip -o shell-extension.zip
@@ -213,6 +209,38 @@ rm -f shell-extension.zip
 # Pop-shell extension, for occasional tilling ++
 # https://aur.archlinux.org/packages/gnome-shell-extension-system76-power-git
 sudo -u paru ${NEW_USER} -S --noconfirm gnome-shell-extension-system76-power-git
+
+################################################
+##### Enable Chaotic AUR repository for a moment
+################################################
+# References: 
+# vulkan dependies seem broken for my build at install, suddenly, it worked many times before, Could't debug fully, CAUR Works..
+
+# Get CAUR Key
+pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key FBA220DFC880C036
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+
+# Enable CAUR by addition
+echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
+
+# update packagelists
+sudo pacman -Syy
+sudo paru -Syy
+
+################################################
+##### Get pop-shell gnome extension
+################################################
+
+sudo -u ${NEW_USER} paru -S --noconfirm pop-shell-plugin-system76-power-git
+
+# undo the CAUR again for now
+sudo sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
+
+# update packagelists
+sudo pacman -Syy
+sudo paru -Syy
+
 ################################################
 ##### Better Qt / GTK integration
 ################################################
