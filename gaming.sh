@@ -33,20 +33,38 @@ cd ..
 rm -rf nvidia-all
 
 ################################################
-##### Steam
+##### MangoHud
 ################################################
-# References:
-# None yet
 
-pacman -S --noconfirm steam
+# References:
+# https://github.com/flathub/com.valvesoftware.Steam.Utility.MangoHud
+
+# Install MangoHud
+flatpak install -y flathub org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/22.08
+
+# Configure MangoHud
+mkdir -p /home/${NEW_USER}/.config/MangoHud
+
+tee /home/${NEW_USER}/.config/MangoHud/MangoHud.conf << EOF
+engine_version
+vulkan_driver
+EOF
+
+# Allow Flatpaks to access MangoHud configs
+flatpak override --filesystem=xdg-config/MangoHud:ro
+
+################################################
+##### Platforms
+################################################
+
+# Steam
+flatpak install -y flathub com.valvesoftware.Steam
+flatpak install -y flathub com.valvesoftware.Steam.Utility.gamescope
+flatpak install -y flathub com.valvesoftware.Steam.CompatibilityTool.Proton-GE
 
 # Steam controllers udev rules
 curl -sSL https://raw.githubusercontent.com/ValveSoftware/steam-devices/master/60-steam-input.rules -o /etc/udev/rules.d/60-steam-input.rules
 udevadm control --reload-rules
-
-################################################
-##### Other game launchers and Compatibity Tools
-################################################
 
 # Heroic Games Launcher
 flatpak install -y flathub com.heroicgameslauncher.hgl
@@ -75,37 +93,3 @@ rm -rf ./grapejuice-git
 # Install prime-run command via nvidia-prime
 pacman -S --noconfirm nvidia-prime
 
-################################################
-##### Enable Chaotic AUR repository
-################################################
-# References: 
-# vulkan dependies seem broken for my build at install, suddenly, it worked many times before, Could't debug fully, CAUR Works..
-
-# Get CAUR Key
-pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
-pacman-key --lsign-key FBA220DFC880C036
-pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
-
-# Enable CAUR by addition
-echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
-
-# update packagelists
-sudo pacman -Syy
-sudo paru -Syy
-
-################################################
-##### Get mangohud and goverlay
-################################################
-
-sudo -u ${NEW_USER} paru -S --noconfirm mangohud
-sudo -u ${NEW_USER} paru -S --noconfirm goverlay
-
-# undo the CAUR again for now
-sudo sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
-
-# update packagelists
-sudo pacman -Syy
-sudo paru -Syy
-
-# reglu something that came unglued
-sudo pacman -S --noconfirm glu
