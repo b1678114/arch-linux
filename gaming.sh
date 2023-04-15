@@ -1,38 +1,6 @@
 #!/usr/bin/bash
 
 ################################################
-##### Enable multilib repository
-################################################
-# References: 
-# none yet, need multi lib because we are not going with flatpak steam and we need them for our nvidia driver
-
-# enable multilib by addition
-echo -e "\n[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
-
-# update packagelists
-sudo pacman -Syy
-sudo paru -Syy
-
-################################################
-##### Get headers for Nvidia to use DKMS
-################################################
-
-sudo pacman -S --noconfirm linux-headers linux-lts-headers
-
-################################################
-##### Nvidia Installer
-################################################
-# References:
-# None yet
-
-git clone https://github.com/Frogging-Family/nvidia-all
-chown -R ${NEW_USER}:${NEW_USER} nvidia-all
-cd nvidia-all
-sudo -u ${NEW_USER} makepkg -si
-cd ..
-rm -rf nvidia-all
-
-################################################
 ##### MangoHud
 ################################################
 
@@ -86,10 +54,4 @@ sudo -u ${NEW_USER} makepkg -si --noconfirm
 cd ..
 rm -rf ./grapejuice-git
 
-################################################
-##### prime-run
-################################################
-
-# Install prime-run command via nvidia-prime
-pacman -S --noconfirm nvidia-prime
 
