@@ -105,8 +105,18 @@ mount --mkdir /dev/nvme0n1p1 /mnt/boot
 # Import mirrorlist
 cp ./extra/mirrorlist /etc/pacman.d/mirrorlist
 
-# Synchronize package databases
+# Force pacman to refresh the package lists
 pacman -Syy
+
+# Initialize Pacman's keyring
+pacman-key --init
+pacman-key --populate
+
+# Configure Pacman
+sed -i "s|^#Color|Color|g" /etc/pacman.conf
+sed -i "s|^#VerbosePkgLists|VerbosePkgLists|g" /etc/pacman.conf
+sed -i "s|^#ParallelDownloads.*|ParallelDownloads = 5|g" /etc/pacman.conf
+sed -i "/ParallelDownloads = 5/a ILoveCandy" /etc/pacman.conf
 
 # Install system
 pacstrap /mnt base base-devel linux linux-lts linux-firmware btrfs-progs ${CPU_MICROCODE}
