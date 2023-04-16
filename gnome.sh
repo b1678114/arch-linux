@@ -129,6 +129,118 @@ mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/legacyschemeautos
 unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/legacyschemeautoswitcher@joshimukul29.gmail.com
 rm -f shell-extension.zip
 
+# Blur my Shell
+# https://extensions.gnome.org/extension/3193/blur-my-shell/
+curl -sSL https://extensions.gnome.org/extension-data/blur-my-shellaunetx.v45.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/blur-my-shell@aunetx
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/blur-my-shell@aunetx
+rm -f shell-extension.zip
+
+# Clipboard History
+# https://extensions.gnome.org/extension/4839/clipboard-history/
+curl -sSL https://extensions.gnome.org/extension-data/clipboard-historyalexsaveau.dev.v25.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/clipboard-history@alexsaveau.dev
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/clipboard-history@alexsaveau.dev
+rm -f shell-extension.zip
+
+# Custom Accent Colors
+# https://extensions.gnome.org/extension/5547/custom-accent-colors/
+curl -sSL https://extensions.gnome.org/extension-data/custom-accent-colorsdemiskp.v5.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/custom-accent-colors@demiskp
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/custom-accent-colors@demiskp
+rm -f shell-extension.zip
+
+# Dash to Panel
+# https://extensions.gnome.org/extension/1160/dash-to-panel/
+curl -sSL https://extensions.gnome.org/extension-data/dash-to-paneljderose9.github.com.v56.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com
+rm -f shell-extension.zip
+
+# Desktop Icons NG (DING)
+# https://extensions.gnome.org/extension/2087/desktop-icons-ng-ding/
+curl -sSL https://extensions.gnome.org/extension-data/dingrastersoft.com.v54.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/ding@rastersoft.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/ding@rastersoft.com
+rm -f shell-extension.zip
+
+# GameMode
+# https://extensions.gnome.org/extension/1852/gamemode/
+curl -sSL https://extensions.gnome.org/extension-data/gamemodechristian.kellner.me.v7.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/gamemode@christian.kellner.me
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/gamemode@christian.kellner.me
+rm -f shell-extension.zip
+
+# Quick Settings Tweaker
+# https://extensions.gnome.org/extension/5446/quick-settings-tweaker/
+curl -sSL https://extensions.gnome.org/extension-data/quick-settings-tweaksqwreey.v17.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/quick-settings-tweaks@qwreey
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/quick-settings-tweaks@qwreey
+rm -f shell-extension.zip
+
+# supergfxctl-gex 
+# https://extensions.gnome.org/extension/5344/supergfxctl-gex/
+curl -sSL https://extensions.gnome.org/extension-data/supergfxctl-gexasus-linux.org.v22.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/supergfxctl-gex@asus-linux.org
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/supergfxctl-gex@asus-linux.org
+rm -f shell-extension.zip
+
+# User Themes
+# https://extensions.gnome.org/extension/19/user-themes/
+curl -sSL https://extensions.gnome.org/extension-data/user-themegnome-shell-extensions.gcampax.github.com.v50.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com
+rm -f shell-extension.zip
+
+# Wireless HID
+# https://extensions.gnome.org/extension/4228/wireless-hid/
+curl -sSL https://extensions.gnome.org/extension-data/wireless-hidchlumskyvaclav.gmail.com.v11.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/wireless-hid@chlumskyvaclav.gmail.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/wireless-hid@chlumskyvaclav.gmail.com
+rm -f shell-extension.zip
+
+# Dash to Dock
+# https://extensions.gnome.org/extension/307/dash-to-dock/
+curl -sSL https://extensions.gnome.org/extension-data/dash-to-dockmicxgx.gmail.com.v79.shell-extension.zip -o shell-extension.zip
+mkdir -p /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com
+unzip shell-extension.zip -d /home/${NEW_USER}/.local/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com
+rm -f shell-extension.zip
+
+# Pop-shell extension, for occasional tilling ++
+# https://aur.archlinux.org/packages/gnome-shell-extension-system76-power-git
+sudo -u paru ${NEW_USER} -S --noconfirm gnome-shell-extension-system76-power-git
+
+################################################
+##### Enable Chaotic AUR repository for a moment
+################################################
+# References: 
+# vulkan dependies seem broken for my build at install, suddenly, it worked many times before, Could't debug fully, CAUR Works..
+
+# Get CAUR Key
+pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key FBA220DFC880C036
+pacman -U --noconfirm 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+
+# Enable CAUR by addition
+echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist" >> /etc/pacman.conf
+
+# update packagelists
+sudo pacman -Syy
+sudo paru -Syy
+
+################################################
+##### Get pop-shell gnome extension
+################################################
+
+sudo -u ${NEW_USER} paru -S --noconfirm gnome-shell-extension-pop-shell-git
+
+# undo the CAUR again for now
+sudo sed -i '/\[chaotic-aur\]/,+1d' /etc/pacman.conf
+
+# update packagelists
+sudo pacman -Syy
+sudo paru -Syy
+
 ################################################
 ##### Better Qt / GTK integration
 ################################################
@@ -143,8 +255,8 @@ pacman -S --noconfirm qgnomeplatform-qt5 qgnomeplatform-qt6 adwaita-qt5 adwaita-
 
 tee -a /etc/environment << EOF
 
-# Qt
-QT_QPA_PLATFORM=wayland
+# Qt  
+QT_QPA_PLATFORM=xcb
 QT_QPA_PLATFORMTHEME=gnome
 QT_STYLE_OVERRIDE=adwaita
 XCURSOR_THEME=Adwaita
@@ -303,10 +415,10 @@ titlebar-font='Noto Sans Bold 10'
 disable-user-extensions=false
 
 [org/gnome/shell]
-favorite-apps=['org.gnome.Nautilus.desktop', 'firefox.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop', 'code.desktop']
+favorite-apps=['gnome-system-monitor.desktop', 'org.gnome.Nautilus.desktop', 'firefox.desktop', 'chromium.desktop', 'com.discordapp.Discord.desktop', 'org.gnome.Terminal.desktop', 'org.gnome.TextEditor.desktop']
 
 [org/gnome/shell]
-enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com']
+enabled-extensions=['appindicatorsupport@rgcjonas.gmail.com', 'dark-variant@hardpixel.eu', 'gsconnect@andyholmes.github.io', 'rounded-window-corners@yilozt', 'legacyschemeautoswitcher@joshimukul29.gmail.com', 'arcmenu@arcmenu.com', 'blur-my-shell@aunetx', 'clipboard-history@alexsaveau.dev', 'custom-accent-colors@demiskp', 'dash-to-panel@jderose9.github.com', 'ding@rastersoft.com', 'gamemode@christian.kellner.me', 'quick-settings-tweaks@qwreey', 'user-theme@gnome-shell-extensions.gcampax.github.com', 'wireless-hid@chlumskyvaclav.gmail.com', 'pop-shell@system76.com' ]
 
 [org/gnome/shell/extensions/dark-variant]
 applications=['code.desktop', 'code-oss.desktop', 'visual-studio-code.desktop', 'rest.insomnia.Insomnia.desktop', 'io.podman_desktop.PodmanDesktop.desktop', 'com.spotify.Client.desktop', 'org.gimp.GIMP.desktop', 'com.heroicgameslauncher.hgl.desktop', 'md.obsidian.Obsidian.desktop', 'obsidian.desktop', 'godot.desktop', 'org.godotengine.Godot.desktop', 'org.blender.Blender.desktop' ,'blender.desktop', 'com.discordapp.Discord.desktop']
@@ -379,7 +491,17 @@ disable-extension-version-validation=true
 
 [org/gnome/desktop/interface]
 font-antialiasing='rgba'
+
+[org/gnome/shell/extensions/dash-to-panel]
+panel-element-positions='{"0":[{"element":"showAppsButton","visible":true,"position":"stackedTL"},{"element":"activitiesButton","visible":false,"position":"stackedTL"},{"element":"leftBox","visible":true,"position":"stackedTL"},{"element":"taskbar","visible":true,"position":"stackedTL"},{"element":"centerBox","visible":true,"position":"stackedBR"},{"element":"rightBox","visible":true,"position":"stackedBR"},{"element":"systemMenu","visible":true,"position":"stackedBR"},{"element":"dateMenu","visible":true,"position":"stackedBR"},{"element":"desktopButton","visible":true,"position":"stackedBR"}]}'
+dot-position='BOTTOM'
+dot-style-focused='DASHES'
+dot-style-unfocused='SQUARES'
 EOF
+
+[org/gnome/mutter]
+experimental-features=['scale-monitor-framebuffer', 'x11-randr-fractional-scaling']
+overlay-key='Super_L'
 
 # Laptop specific Gnome configurations
 if cat /sys/class/dmi/id/chassis_type | grep 10 > /dev/null; then
