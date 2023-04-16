@@ -1,8 +1,38 @@
 #!/usr/bin/bash
 
 ################################################
+##### Time
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/System_time#Time_zone
+# https://wiki.archlinux.org/title/Systemd-timesyncd
+
+# Enable systemd-timesyncd
+systemctl enable systemd-timesyncd.service
+
+# Set timezone
+ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+hwclock --systohc --utc
+
+################################################
+##### Locale and keymap
+################################################
+
+# Set locale
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+echo "LANG=\"en_US.UTF-8\"" > /etc/locale.conf
+locale-gen
+
+# Set keymap
+echo "KEYMAP=us" > /etc/vconsole.conf
+
+################################################
 ##### Hostname
 ################################################
+
+# Set hostname
+echo ${NEW_HOSTNAME} > /etc/hostname
 
 # Set /etc/hosts
 tee /etc/hosts << EOF
@@ -63,6 +93,84 @@ pacman -S --noconfirm \
     rsync
 
 ################################################
+##### Swap
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/Btrfs#Swap_file
+# https://wiki.archlinux.org/title/swap#Swappiness
+# https://wiki.archlinux.org/title/Improving_performance#zram_or_zswap
+# https://wiki.gentoo.org/wiki/Zram
+# https://www.dwarmstrong.org/zram-swap/
+# https://www.reddit.com/r/Fedora/comments/mzun99/new_zram_tuning_benchmarks/
+
+# Create swap file
+btrfs filesystem mkswapfile --size 8g /swap/swapfile
+
+# Activate swap file
+swapon /swap/swapfile
+
+# Add swapfile to fstab configuration
+tee -a /etc/fstab << EOF
+
+# swap file
+/swap/swapfile                              none        swap    defaults                                                                                                0 0
+EOF
+
+# Set swappiness
+echo 'vm.swappiness=30' > /etc/sysctl.d/99-swappiness.conf
+
+# Set vfs cache pressure
+echo 'vm.vfs_cache_pressure=50' > /etc/sysctl.d/99-vfs-cache-pressure.conf
+
+################################################
+##### Tweaks
+################################################
+
+# References:
+# https://github.com/CryoByte33/steam-deck-utilities/blob/main/docs/tweak-explanation.md
+# https://wiki.cachyos.org/en/home/General_System_Tweaks
+
+# Split Lock Mitigate - default: 1
+echo 'kernel.split_lock_mitigate=0' > /etc/sysctl.d/99-splitlock.conf
+
+# Compaction Proactiveness - default: 20
+echo 'vm.compaction_proactiveness=0' > /etc/sysctl.d/99-compaction_proactiveness.conf
+
+# Page Lock Unfairness - default: 5
+echo 'vm.page_lock_unfairness=1' > /etc/sysctl.d/99-page_lock_unfairness.conf
+
+# Hugepage Defragmentation - default: 1
+# Transparent Hugepages - default: always
+# Shared Memory in Transparent Hugepages - default: never
+tee /etc/systemd/system/kernel-tweaks.service << 'EOF'
+[Unit]
+Description=Set kernel tweaks
+After=multi-user.target
+StartLimitBurst=0
+
+[Service]
+Type=oneshot
+Restart=on-failure
+ExecStart=/usr/bin/bash -c 'echo always > /sys/kernel/mm/transparent_hugepage/enabled'
+ExecStart=/usr/bin/bash -c 'echo advise > /sys/kernel/mm/transparent_hugepage/shmem_enabled'
+ExecStart=/usr/bin/bash -c 'echo 0 > /sys/kernel/mm/transparent_hugepage/khugepaged/defrag'
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+systemctl enable kernel-tweaks.service
+
+# Disable watchdog timer drivers
+# sudo dmesg | grep -e sp5100 -e iTCO -e wdt -e tco
+tee /etc/modprobe.d/disable-watchdog-drivers.conf << 'EOF'
+blacklist sp5100_tco
+blacklist iTCO_wdt
+blacklist iTCO_vendor_support
+EOF
+
+################################################
 ##### Users
 ################################################
 
@@ -74,7 +182,8 @@ echo "root:${NEW_USER_PASSWORD}" | chpasswd
 chsh -s /usr/bin/zsh
 
 # Setup user
-usermod -G wheel -s /usr/bin/zsh ${NEW_USER}
+useradd -m -G wheel -s /usr/bin/zsh ${NEW_USER}
+echo "${NEW_USER}:${NEW_USER_PASSWORD}" | chpasswd
 echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers
 
 # Create XDG user directories
@@ -145,6 +254,10 @@ pacman -S --noconfirm firewalld
 systemctl enable firewalld.service
 firewall-offline-cmd --set-default-zone=block
 
+# Install and enable NetworkManager
+pacman -S --noconfirm networkmanager
+systemctl enable NetworkManager.service
+
 # Install bind tools
 pacman -S --noconfirm bind
 
@@ -165,25 +278,132 @@ sed -i "s|#COMPRESSION_OPTIONS=()|COMPRESSION_OPTIONS=(-2)|" /etc/mkinitcpio.con
 mkinitcpio -P
 
 ################################################
-##### systemd-boot
+##### GRUB
 ################################################
 
 # References:
-# https://wiki.archlinux.org/title/systemd-boot
+# https://wiki.archlinux.org/title/GRUB
+# https://wiki.archlinux.org/title/Kernel_parameters#GRUB
+# https://wiki.archlinux.org/title/GRUB/Tips_and_tricks#Password_protection_of_GRUB_menu
+# https://www.gnu.org/software/grub/manual/grub/grub.html
+# https://archlinux.org/news/grub-bootloader-upgrade-and-configuration-incompatibilities/
+# https://wiki.archlinux.org/title/silent_boot
 
-# systemd-boot upgrade hook
+# Install GRUB packages
+pacman -S --noconfirm grub efibootmgr
+
+# Configure GRUB
+sed -i "s|^GRUB_DEFAULT=.*|GRUB_DEFAULT=\"2\"|g" /etc/default/grub
+sed -i "s|^GRUB_TIMEOUT=.*|GRUB_TIMEOUT=1|g" /etc/default/grub
+sed -i "s|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT=\"\"|g" /etc/default/grub
+sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"rd.luks.name=$(blkid -s UUID -o value /dev/nvme0n1p2)=system nmi_watchdog=0 rw quiet splash\"|g" /etc/default/grub
+sed -i "s|^GRUB_PRELOAD_MODULES=.*|GRUB_PRELOAD_MODULES=\"part_gpt part_msdos luks2\"|g" /etc/default/grub
+sed -i "s|^GRUB_TIMEOUT_STYLE=.*|GRUB_TIMEOUT_STYLE=hidden|g" /etc/default/grub
+sed -i "s|^#GRUB_ENABLE_CRYPTODISK=.*|GRUB_ENABLE_CRYPTODISK=y|g" /etc/default/grub
+sed -i "s|^#GRUB_DISABLE_SUBMENU=.*|GRUB_DISABLE_SUBMENU=y|g" /etc/default/grub
+
+# Install GRUB
+grub-install --target=x86_64-efi --efi-directory=/boot --boot-directory=/boot --bootloader-id=GRUB
+
+# Password protect GRUB editing, but make menu unrestricted
+GRUB_PASSWORD_HASH=$(echo -e "${LUKS_PASSWORD}\n${LUKS_PASSWORD}" | LC_ALL=C /usr/bin/grub-mkpasswd-pbkdf2 | awk '/hash of / {print $NF}')
+
+chmod o-r /etc/grub.d/40_custom
+
+tee -a /etc/grub.d/40_custom << EOF
+
+# Password protect GRUB menu
+set superusers="${NEW_USER}"
+password_pbkdf2 ${NEW_USER} ${GRUB_PASSWORD_HASH}
+EOF
+
+sed -i "s|CLASS=\"--class gnu-linux --class gnu --class os.*\"|CLASS=\"--class gnu-linux --class gnu --class os --unrestricted\"|g" /etc/grub.d/10_linux
+
+# Do not display 'Loading ...' messages
+sed -i '/Loading initial ramdisk/d' /etc/grub.d/10_linux
+sed -i '/Loading Linux/d' /etc/grub.d/10_linux
+
+# Reduce boot verbosity (silent boot)
+sed -i "s|quiet|& loglevel=3 systemd.show_status=auto rd.udev.log_level=3 vt.global_cursor_default=0|" /etc/default/grub
+
+# Generate GRUB's configuration file
+grub-mkconfig -o /boot/grub/grub.cfg
+
+# GRUB upgrade hooks
 mkdir -p /etc/pacman.d/hooks
-tee /etc/pacman.d/hooks/95-systemd-boot.hook << 'EOF'
+
+tee /etc/pacman.d/hooks/90-grub-unrestricted.hook << EOF
 [Trigger]
 Type = Package
 Operation = Upgrade
-Target = systemd
+Target = grub
 
 [Action]
-Description = Gracefully upgrading systemd-boot...
+Description = Adding --unrestricted to GRUB...
 When = PostTransaction
-Exec = /usr/bin/systemctl restart systemd-boot-update.service
+Exec = /usr/bin/sed -i "s|CLASS=\"--class gnu-linux --class gnu --class os.*\"|CLASS=\"--class gnu-linux --class gnu --class os --unrestricted\"|g" /etc/grub.d/10_linux
 EOF
+
+tee /etc/pacman.d/hooks/91-grub-hide-messages.hook << EOF
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = grub
+
+[Action]
+Description = Hiding GRUB boot messages...
+When = PostTransaction
+Exec = /usr/bin/sh -c "sed -i '/Loading initial ramdisk/d' /etc/grub.d/10_linux; sed -i '/Loading Linux/d' /etc/grub.d/10_linux"
+EOF
+
+tee /etc/pacman.d/hooks/92-grub-upgrade.hook << EOF
+[Trigger]
+Type = Package
+Operation = Upgrade
+Target = grub
+
+[Action]
+Description = Upgrading GRUB...
+When = PostTransaction
+Exec = /usr/bin/sh -c "grub-install --target=x86_64-efi --efi-directory=/boot --boot-directory=/boot --bootloader-id=GRUB; grub-mkconfig -o /boot/grub/grub.cfg"
+EOF
+
+################################################
+##### Unlock LUKS with TPM2
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/Trusted_Platform_Module#systemd-cryptenroll
+
+# Install TPM2-tools
+pacman -S --noconfirm tpm2-tools tpm2-tss
+
+# Configure initramfs to unlock the encrypted volume
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch.conf
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch-lts.conf
+
+################################################
+##### Secure boot
+################################################
+
+# References:
+# https://github.com/Foxboron/sbctl
+# https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Using_your_own_keys
+
+# Install sbctl
+pacman -S --noconfirm sbctl
+
+# Create secure boot signing keys
+sbctl create-keys
+
+# Enroll keys to EFI
+sbctl enroll-keys --microsoft
+
+# Sign files with secure boot keys
+sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
+sbctl sign -s /boot/EFI/systemd/systemd-bootx64.efi
+sbctl sign -s /boot/vmlinuz-linux
+sbctl sign -s /boot/vmlinuz-linux-lts
 
 ################################################
 ##### GPU
@@ -261,6 +481,25 @@ pacman -S --noconfirm \
     gst-plugins-ugly \
     gst-plugin-pipewire \
     gstreamer-vaapi
+
+################################################
+##### PipeWire
+################################################
+
+# References:
+# https://wiki.archlinux.org/title/PipeWire
+
+# Install PipeWire and WirePlumber
+pacman -S --noconfirm \
+    pipewire \
+    pipewire-alsa \
+    pipewire-jack \
+    pipewire-pulse \
+    libpulse \
+    wireplumber --ask 4
+
+# Enable PipeWire's user service
+sudo -u ${NEW_USER} systemctl --user enable pipewire-pulse.service
 
 ################################################
 ##### Flatpak
@@ -606,9 +845,9 @@ systemctl enable bluetooth.service
 
 # Install and configure desktop environment
 if [ ${DESKTOP_ENVIRONMENT} = "plasma" ]; then
-    ./plasma.sh
+    /install-arch/plasma.sh
 elif [ ${DESKTOP_ENVIRONMENT} = "gnome" ]; then
-    ./gnome.sh
+    /install-arch/gnome.sh
 fi
 
 # Hide applications from menus
@@ -631,7 +870,7 @@ done
 
 # Install and configure gaming with Flatpak
 if [ ${GAMING} = "yes" ]; then
-    ./gaming.sh
+    /install-arch/gaming.sh
 fi
 
 ################################################
