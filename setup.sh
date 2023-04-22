@@ -370,7 +370,7 @@ EOF
 
 
 ################################################
-##### Unlock LUKS with TPM2
+##### Unlock LUKS with TPM2 (in the flavor of grub)
 ################################################
 
 # References:
