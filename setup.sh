@@ -379,8 +379,8 @@ EOF
 pacman -S --noconfirm tpm2-tools tpm2-tss
 
 # Configure initramfs to unlock the encrypted volume
-sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch.conf
-sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch-lts.conf
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda1)=tpm2-device=auto|" /boot/loader/entries/arch.conf
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda1)=tpm2-device=auto|" /boot/loader/entries/arch-lts.conf
 
 ################################################
 ##### Secure boot
