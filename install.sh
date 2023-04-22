@@ -96,7 +96,7 @@ mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
 
 # Format and mount EFI/boot partition
 mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI
-mount --mkdir /dev/nvme0n1p1 /mnt/boot
+mount --mkdir /dev/sda1 /mnt/boot
 
 ################################################
 ##### Install system
