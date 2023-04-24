@@ -126,16 +126,16 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 # Configure system
 mkdir -p /mnt/install-arch/extra
-curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-note-envy/extra/firefox.js -O
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-hp-ryzen/extra/firefox.js -O
 cp ./firefox.js /mnt/install-arch/firefox.js
 chmod 0755 /mnt/install-arch/firefox.js
-curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-note-envy/gnome.sh -O
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-hp-ryzen/gnome.sh -O
 cp ./gnome.sh /mnt/install-arch/gnome.sh
 chmod 0755 /mnt/install-arch/gnome.sh
-curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-note-envy/gaming.sh -O
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-hp-ryzen/gaming.sh -O
 cp ./gaming.sh /mnt/install-arch/gaming.sh
 chmod 0755 /mnt/install-arch/gaming.sh
-curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-note-envy/setup.sh -O
+curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/devel-hp-ryzen/setup.sh -O
 cp ./setup.sh /mnt/install-arch/setup.sh
 chmod 0755 /mnt/install-arch/setup.sh
 arch-chroot /mnt/ /bin/bash /install-arch/setup.sh
