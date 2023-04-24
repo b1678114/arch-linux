@@ -380,7 +380,7 @@ EOF
 pacman -S --noconfirm tpm2-tools tpm2-tss
 
 # Configure initramfs to unlock the encrypted volume
-sed -i "s|=systen|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-device=auto|" /etc/default/grub
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-device=auto|" /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
 ################################################
