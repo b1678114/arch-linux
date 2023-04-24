@@ -384,7 +384,7 @@ sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-dev
 grub-mkconfig -o /boot/grub/grub.cfg
 
 ################################################
-##### Secure boot
+##### Secure boot (in the flavor of grub)
 ################################################
 
 # References:
@@ -398,11 +398,12 @@ pacman -S --noconfirm sbctl
 sbctl create-keys
 
 # Enroll keys to EFI
-sbctl enroll-keys --microsoft
+sbctl enroll-keys --yes-this-might-brick-my-machine
 
 # Sign files with secure boot keys
-sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
-sbctl sign -s /boot/EFI/systemd/systemd-bootx64.efi
+sbctl sign -s /boot/EFI/GRUB/grubx64.efi
+sbctl sign -s /boot/grub/x86_64-efi/core.efi
+sbctl sign -s /boot/grub/x86_64-efi/grub.efi
 sbctl sign -s /boot/vmlinuz-linux
 sbctl sign -s /boot/vmlinuz-linux-lts
 
