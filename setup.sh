@@ -369,7 +369,7 @@ Exec = /usr/bin/sh -c "grub-install --target=x86_64-efi --efi-directory=/boot --
 EOF
 
 ################################################
-##### Unlock LUKS with TPM2
+##### Unlock LUKS with TPM2 (in the flavor of grub)
 ################################################
 
 # References:
@@ -379,8 +379,8 @@ EOF
 pacman -S --noconfirm tpm2-tools tpm2-tss
 
 # Configure initramfs to unlock the encrypted volume
-sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch.conf
-sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /boot/loader/entries/arch-lts.conf
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-device=auto|" /etc/default/grub
+grub-mkconfig -o /boot/grub/grub.cfg
 
 ################################################
 ##### Secure boot
