@@ -82,10 +82,10 @@ btrfs subvolume create /mnt/@swap
 umount -R /mnt
 
 # Mount BTRFS subvolumes
-mount -t btrfs -o subvol=@,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt
+mount -t btrfs -o subvol=@,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt
 
 mkdir -p /mnt/home
-mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt/home
+mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt/home
 
 mkdir -p /mnt/swap
 mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
