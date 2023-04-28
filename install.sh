@@ -52,14 +52,14 @@ fi
 # https://www.dwarmstrong.org/archlinux-install/
 
 # Delete old partition layout and re-read partition table
-wipefs -af /dev/sda
-sgdisk --zap-all --clear /dev/sda
-partprobe /dev/sda
+wipefs -af /dev/nvme0n1
+sgdisk --zap-all --clear /dev/nvme0n1
+partprobe /dev/nvme0n1
 
 # Partition disk and re-read partition table
-sgdisk -n 1:0:+512MiB -t 1:ef00 -c 1:EFI /dev/sda
-sgdisk -n 2:0:0 -t 2:8309 -c 2:LUKS /dev/sda
-partprobe /dev/sda
+sgdisk -n 1:0:+512MiB -t 1:ef00 -c 1:EFI /dev/nvme0n1
+sgdisk -n 2:0:0 -t 2:8309 -c 2:LUKS /dev/nvme0n1
+partprobe /dev/nvme0n1
 
 ################################################
 ##### LUKS / BTRFS
@@ -96,7 +96,7 @@ mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
 
 # Format and mount EFI/boot partition
 mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI
-mount --mkdir /dev/sda1 /mnt/boot
+mount --mkdir /dev/nvme0n1p1 /mnt/boot
 
 ################################################
 ##### Install system
