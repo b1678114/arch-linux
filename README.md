@@ -26,7 +26,7 @@ For non legacy boot partitioning or for a Gnome/KDE-Plasma display manager out o
 7. Run script: `chmod 0755 install.sh && sudo ./install.sh`
 8. Reboot and re-enable fast boot
 9. Log into newly installed tty prompt
-10. Install your window manager. `git clone https://gitlab.com/dwt1/dtos && ./dtos/dtos`
+10. Install your window manager. `git clone https://gitlab.com/dwt1/dtos && cd dtos && ./dtos`
 
 ## Misc guides
 ### How to chroot
