@@ -15,7 +15,7 @@ For non legacy boot partitioning or for a Gnome/KDE-Plasma display manager out o
 
 ## Installation guide
 1. Disable fast boot
-2. Boot into Arch Linux ISO
+2. Boot into Arch Linux ISO (I recommend putting the iso on Ventoy)
 3. Connect to the internet. If using wifi, you can use `iwctl` to connect to a network:
    - scan for networks: `station wlan0 scan`
    - list available networks: `station wlan0 get-networks`
