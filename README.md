@@ -27,7 +27,7 @@ For non legacy boot partitioning or for graphics out of the box, see other branc
 7. Run script: `chmod 0755 install.sh && sudo ./install.sh`
 8. Reboot and re-enable fast boot
 9. Log into newly installed tty prompt
-10. Install your window manager. `git clone https://gitlab.com/dwt1/dtos && ./dtos`
+10. Install your window manager. `git clone https://gitlab.com/dwt1/dtos && ./dtos/dtos`
 
 ## Misc guides
 ### How to chroot
