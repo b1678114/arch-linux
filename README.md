@@ -39,7 +39,7 @@ mount /dev/nvme0n1p1 /mnt/boot
 arch-chroot /mnt
 ```
 
-### How to show reveal output durring plymouth boot
+### How to show output durring plymouth boot
 ```bash
 Press anything during boot
 ```
