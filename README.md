@@ -1,5 +1,5 @@
 # Arch Linux install scripts
-For GRUB with BTRFS snapshots see branch 'grub' 
+For non legacy boot partitioning or for graphics out of the box, see other branches.
 
 ## Requirements
 - MBR
