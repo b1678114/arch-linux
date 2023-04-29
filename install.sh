@@ -46,22 +46,22 @@ fi
 # https://www.dwarmstrong.org/archlinux-install/
 
 # Delete old partition layout and re-read partition table
-wipefs -af /dev/nvme0n1
-sgdisk --zap-all --clear /dev/nvme0n1
-partprobe /dev/nvme0n1
+wipefs -af /dev/sda
+parted --script /dev/sda mklabel msdos
+partprobe /dev/sda
 
 # Partition disk and re-read partition table
-sgdisk -n 1:0:+512MiB -t 1:ef00 -c 1:EFI /dev/nvme0n1
-sgdisk -n 2:0:0 -t 2:8309 -c 2:LUKS /dev/nvme0n1
-partprobe /dev/nvme0n1
+parted --script /dev/sda mkpart primary ext2 1MiB 513MiB
+parted --script /dev/sda mkpart primary ext2 513MiB 100%
+partprobe /dev/sda
 
 ################################################
 ##### LUKS / BTRFS
 ################################################
 
 # Encrypt and open LUKS partition
-echo ${LUKS_PASSWORD} | cryptsetup --type luks2 --hash sha512 --use-random luksFormat /dev/disk/by-partlabel/LUKS
-echo ${LUKS_PASSWORD} | cryptsetup luksOpen /dev/disk/by-partlabel/LUKS system
+echo ${LUKS_PASSWORD} | cryptsetup --type luks2 --hash sha512 --use-random luksFormat /dev/sda2
+echo ${LUKS_PASSWORD} | cryptsetup luksOpen /dev/sda2 system
 
 # Create BTRFS
 mkfs.btrfs -L system /dev/mapper/system
@@ -76,10 +76,10 @@ btrfs subvolume create /mnt/@swap
 umount -R /mnt
 
 # Mount BTRFS subvolumes
-mount -t btrfs -o subvol=@,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt
+mount -t btrfs -o subvol=@,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt
 
 mkdir -p /mnt/home
-mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt/home
+mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt/home
 
 mkdir -p /mnt/swap
 mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
@@ -89,8 +89,8 @@ mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
 ################################################
 
 # Format and mount EFI/boot partition
-mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI
-mount --mkdir /dev/nvme0n1p1 /mnt/boot
+mkfs.ext2 -L boot /dev/sda1
+mount --mkdir /dev/sda1 /mnt/boot
 
 ################################################
 ##### Install system
