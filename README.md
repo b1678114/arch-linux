@@ -4,7 +4,6 @@ For non legacy boot partitioning or for a Gnome/KDE-Plasma display manager out o
 ## Requirements
 - MBR
 - SDA
-- Single GPU (Intel or Radeon)
 
 ## Partitions layout
 | Name                                                 | Type  | FS Type | Mountpoint |      Size     |
