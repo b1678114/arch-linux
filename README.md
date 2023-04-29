@@ -34,7 +34,7 @@ For non legacy boot partitioning or for a Gnome/KDE-Plasma display manager out o
 cryptsetup luksOpen /dev/disk/by-partlabel/LUKS system
 mount -t btrfs -o subvol=@,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt
 mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt/home
-mount /dev/nvme0n1p1 /mnt/boot
+mount /dev/sda1 /mnt/boot
 arch-chroot /mnt
 ```
 
