@@ -120,7 +120,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 # Configure system
 mkdir -p /mnt/install-arch/extra
-curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/headless/setup.sh -O
+curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/legacy-headless/setup.sh -O
 cp ./setup.sh /mnt/install-arch/setup.sh
 chmod 0755 /mnt/install-arch/setup.sh
 arch-chroot /mnt/ /bin/bash /install-arch/setup.sh
