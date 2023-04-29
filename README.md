@@ -10,7 +10,7 @@ For GRUB with BTRFS snapshots see branch 'grub'
 | Name                                                 | Type  | FS Type | Mountpoint |      Size     |
 | ---------------------------------------------------- | :---: | :-----: | :--------: | :-----------: |
 | sda                                                  | disk  |         |            |               |
-| ├─sda1                                               | part  |  FAT32  |    /boot   |    512MiB     |
+| ├─sda1                                               | part  |  EXT2   |    /boot   |    512MiB     |
 | ├─sda2                                               | part  |  LUKS2  |            |               |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──system              | crypt |  BTRFS  |     /      |  Rest of disk |
 
