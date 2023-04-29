@@ -1,5 +1,5 @@
 # Arch Linux install scripts
-For non legacy boot partitioning or for graphics out of the box, see other branches.
+For non legacy boot partitioning or for a Gnome/KDE-Plasma display manager out of the box, see other branches.
 
 ## Requirements
 - MBR
