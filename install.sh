@@ -56,12 +56,12 @@ fi
 
 # Delete old partition layout and re-read partition table
 wipefs -af /dev/sda
-sgdisk --zap-all --clear /dev/sda
+parted --script /dev/sda mklabel msdos
 partprobe /dev/sda
 
 # Partition disk and re-read partition table
-sgdisk -n 1:0:+512MiB -t 1:ef00 -c 1:EFI /dev/sda
-sgdisk -n 2:0:0 -t 2:8309 -c 2:LUKS /dev/sda
+parted --script /dev/sda mkpart primary ext2 1MiB 513MiB
+parted --script /dev/sda mkpart primary ext2 513MiB 100%
 partprobe /dev/sda
 
 ################################################
@@ -69,8 +69,8 @@ partprobe /dev/sda
 ################################################
 
 # Encrypt and open LUKS partition
-echo ${LUKS_PASSWORD} | cryptsetup --type luks2 --hash sha512 --use-random luksFormat /dev/disk/by-partlabel/LUKS
-echo ${LUKS_PASSWORD} | cryptsetup luksOpen /dev/disk/by-partlabel/LUKS system
+echo ${LUKS_PASSWORD} | cryptsetup --type luks2 --hash sha512 --use-random luksFormat /dev/sda2
+echo ${LUKS_PASSWORD} | cryptsetup luksOpen /dev/sda2 system
 
 # Create BTRFS
 mkfs.btrfs -L system /dev/mapper/system
