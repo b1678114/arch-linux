@@ -129,19 +129,19 @@ genfstab -U /mnt >> /mnt/etc/fstab
 
 # Configure system
 mkdir -p /mnt/install-arch/extra
-curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/sda-grub/extra/firefox.js -O
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/legacy-grub/extra/firefox.js -O
 cp ./firefox.js /mnt/install-arch/firefox.js
 chmod 0755 /mnt/install-arch/firefox.js
-curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/sda-grub/gnome.sh -O
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/legacy-grub/gnome.sh -O
 cp ./gnome.sh /mnt/install-arch/gnome.sh
 chmod 0755 /mnt/install-arch/gnome.sh
-curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/sda-grub/gaming.sh -O
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/legacy-grub/gaming.sh -O
 cp ./gaming.sh /mnt/install-arch/gaming.sh
 chmod 0755 /mnt/install-arch/gaming.sh
-curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/sda-grub/setup.sh -O
+curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/legacy-grub/setup.sh -O
 cp ./setup.sh /mnt/install-arch/setup.sh
 chmod 0755 /mnt/install-arch/setup.sh
-curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/sda-grub/plasma.sh -O
+curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/legacy-grub/plasma.sh -O
 cp ./setup.sh /mnt/install-arch/plasma.sh
 chmod 0755 /mnt/install-arch/plasma.sh
 arch-chroot /mnt/ /bin/bash /install-arch/setup.sh
