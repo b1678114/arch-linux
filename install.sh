@@ -131,6 +131,9 @@ chmod 0755 /mnt/install-arch/gaming.sh
 curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/main/setup.sh -O
 cp ./setup.sh /mnt/install-arch/setup.sh
 chmod 0755 /mnt/install-arch/setup.sh
+curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/sda-grub/plasma.sh -O
+cp ./setup.sh /mnt/install-arch/plasma.sh
+chmod 0755 /mnt/install-arch/plasma.sh
 arch-chroot /mnt/ /bin/bash /install-arch/setup.sh
 rm -rf /mnt/install-arch
 umount -R /mnt
