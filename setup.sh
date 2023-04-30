@@ -835,6 +835,15 @@ if [ ${GAMING} = "yes" ]; then
 fi
 
 ################################################
+##### Plymouth boot animations
+################################################
+
+#
+if [ ${PLYMOUTH} = "yes" ]; then
+    sudo -u ${NEW_USER} paru -S --noconfirm plymouth-theme-arch-charge-gdm-spinner
+fi
+
+################################################
 ##### Cleanup
 ################################################
 
