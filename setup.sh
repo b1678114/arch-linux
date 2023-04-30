@@ -307,7 +307,7 @@ sed -i "s|^#GRUB_ENABLE_CRYPTODISK=.*|GRUB_ENABLE_CRYPTODISK=y|g" /etc/default/g
 sed -i "s|^#GRUB_DISABLE_SUBMENU=.*|GRUB_DISABLE_SUBMENU=y|g" /etc/default/grub
 
 # Install GRUB
-grub-install --target=x86_64-efi --efi-directory=/boot --boot-directory=/boot --bootloader-id=GRUB
+grub-install --target=i386-pc /dev/sda
 
 # Password protect GRUB editing, but make menu unrestricted
 GRUB_PASSWORD_HASH=$(echo -e "${LUKS_PASSWORD}\n${LUKS_PASSWORD}" | LC_ALL=C /usr/bin/grub-mkpasswd-pbkdf2 | awk '/hash of / {print $NF}')
