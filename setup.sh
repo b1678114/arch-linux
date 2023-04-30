@@ -880,9 +880,13 @@ if [ ${GAMING} = "yes" ]; then
 fi
 
 ################################################
-##### Plymouth boot splash
+##### Plymouth boot animations
 ################################################
-sudo -u ${NEW_USER} paru -S --noconfirm plymouth-theme-arch-charge-gdm-spinner
+
+#
+if [ ${PLYMOUTH} = "yes" ]; then
+    sudo -u ${NEW_USER} paru -S --noconfirm plymouth-theme-arch-charge-gdm-spinner
+fi
 
 ################################################
 ##### Cleanup
