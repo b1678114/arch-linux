@@ -98,7 +98,7 @@ mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
 ################################################
 
 # Format and mount EFI/boot partition
-mkfs.fat -F32 -n EFI /dev/disk/by-partlabel/EFI
+mkfs.ext2 -L boot /dev/sda1
 mount --mkdir /dev/sda1 /mnt/boot
 
 ################################################
