@@ -369,7 +369,7 @@ Target = grub
 [Action]
 Description = Upgrading GRUB...
 When = PostTransaction
-Exec = /usr/bin/sh -c "grub-install --target=x86_64-efi --efi-directory=/boot --boot-directory=/boot --bootloader-id=GRUB; grub-mkconfig -o /boot/grub/grub.cfg"
+Exec = /usr/bin/sh -c "grub-install --target=i386-pc /dev/sda; grub-mkconfig -o /boot/grub/grub.cfg"
 EOF
 
 
@@ -386,30 +386,6 @@ pacman -S --noconfirm tpm2-tools tpm2-tss
 # Configure initramfs to unlock the encrypted volume
 sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-device=auto|" /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
-
-################################################
-##### Secure boot (in the flavor of grub)
-################################################
-
-# References:
-# https://github.com/Foxboron/sbctl
-# https://wiki.archlinux.org/title/Unified_Extensible_Firmware_Interface/Secure_Boot#Using_your_own_keys
-
-# Install sbctl
-pacman -S --noconfirm sbctl
-
-# Create secure boot signing keys
-sbctl create-keys
-
-# Enroll keys to EFI
-sbctl enroll-keys --yes-this-might-brick-my-machine
-
-# Sign files with secure boot keys
-sbctl sign -s /boot/EFI/GRUB/grubx64.efi
-sbctl sign -s /boot/grub/x86_64-efi/core.efi
-sbctl sign -s /boot/grub/x86_64-efi/grub.efi
-sbctl sign -s /boot/vmlinuz-linux
-sbctl sign -s /boot/vmlinuz-linux-lts
 
 ################################################
 ##### GPU
