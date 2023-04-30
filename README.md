@@ -1,60 +1,46 @@
 # Arch Linux install scripts
-For GRUB with BTRFS snapshots see branch 'grub' 
+For non legacy boot partitioning or for a Gnome/KDE-Plasma display manager out of the box, see other branches.
 
 ## Requirements
-- UEFI
-- NVMe SSD
-- Single GPU (Intel or Radeon)
-- TPM2
+- MBR
+- SDA
 
 ## Partitions layout
 | Name                                                 | Type  | FS Type | Mountpoint |      Size     |
 | ---------------------------------------------------- | :---: | :-----: | :--------: | :-----------: |
-| nvme0n1                                              | disk  |         |            |               |
-| ├─nvme0n1p1                                          | part  |  FAT32  |    /boot   |    512MiB     |
-| ├─nvme0n1p2                                          | part  |  LUKS2  |            |               |
+| sda                                                  | disk  |         |            |               |
+| ├─sda1                                               | part  |  EXT2   |    /boot   |    512MiB     |
+| ├─sda2                                               | part  |  LUKS2  |            |               |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├──system              | crypt |  BTRFS  |     /      |  Rest of disk |
 
 ## Installation guide
-1. Disable secure boot and delete existing keys (go into setup mode)
-2. Boot into Arch Linux ISO
+1. Disable fast boot
+2. Boot into Arch Linux ISO (I recommend putting the iso on Ventoy)
 3. Connect to the internet. If using wifi, you can use `iwctl` to connect to a network:
    - scan for networks: `station wlan0 scan`
    - list available networks: `station wlan0 get-networks`
    - connect to a network: `station wlan0 connect SSID`
 4. Init keyring: `pacman-key --init && pacman-key --populate`
 5. Update repos and install git: `pacman -Sy git`
-6. Clone repo: `git clone https://github.com/gjpin/arch-linux.git`
-7. Run script: `cd arch-linux && ./install.sh`
-8. Reboot and re-enable secure boot
-9. Boot into new installation
-10. Enroll LUKS key in TPM2: `sudo systemd-cryptenroll --tpm2-pcrs=0+1+7 --tpm2-device=auto /dev/nvme0n1p2`
+6. Clone with curl: `curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/legacy-headless/install.sh -O`
+7. Run script: `chmod 0755 install.sh && sudo ./install.sh`
+8. Reboot and re-enable fast boot
+9. Log into newly installed tty prompt
+10. Install your window manager. `git clone https://gitlab.com/dwt1/dtos && cd dtos && ./dtos`
 
 ## Misc guides
 ### How to chroot
 ```bash
 cryptsetup luksOpen /dev/disk/by-partlabel/LUKS system
-mount -t btrfs -o subvol=@,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt
-mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,discard,space_cache=v2,ssd LABEL=system /mnt/home
-mount /dev/nvme0n1p1 /mnt/boot
+mount -t btrfs -o subvol=@,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt
+mount -t btrfs -o subvol=@home,compress=zstd:3,noatime,space_cache=v2 LABEL=system /mnt/home
+mount /dev/sda1 /mnt/boot
 arch-chroot /mnt
 ```
 
-### How to re-enroll keys in TPM2
+### How to show output durring plymouth boot
 ```bash
-sudo systemd-cryptenroll --wipe-slot=tpm2 /dev/nvme0n1p2
-sudo systemd-cryptenroll --tpm2-pcrs=0+1+7 --tpm2-device=auto /dev/nvme0n1p2
-```
-
-### How to show systemd-boot menu
-```bash
-Press 'space' during boot
-```
-
-### How to repair EFI
-```bash
-1. chroot
-2. fsck -a /dev/nvme0n1p1
+Press anything during boot
 ```
 
 ## How to revert to a previous Flatpak commit
@@ -67,57 +53,4 @@ sudo flatpak update --commit=${HASH} org.godotengine.Godot
 
 # Pin version
 flatpak mask org.godotengine.Godot
-```
-
-### How to use Gamescope + MangoHud in Steam
-```bash
-# MangoHud
-mangohud %command%
-
-# gamescope native resolution
-gamescope -f -e -- %command%
-
-# gamescope native resolution + MangoHud
-gamescope -f -e -- mangohud %command%
-
-# gamescope upscale from 1080p to 1440p with FSR + mangohud
-gamescope -h 1080 -H 1440 -U -f -e -- mangohud %command%
-```
-
-### AppArmor
-```bash
-# References:
-# https://wiki.archlinux.org/title/AppArmor
-
-# Install AppArmor
-pacman -S --noconfirm apparmor
-
-# Enable AppArmor service
-systemctl enable apparmor.service
-
-# Enable AppArmor as default security model
-sed -i "s|tpm2-device=auto|& lsm=landlock,lockdown,yama,integrity,apparmor,bpf|" /boot/loader/entries/arch.conf
-sed -i "s|tpm2-device=auto|& lsm=landlock,lockdown,yama,integrity,apparmor,bpf|" /boot/loader/entries/arch-lts.conf
-
-# Enable caching AppArmor profiles
-sed -i "s|^#write-cache|write-cache|g" /etc/apparmor/parser.conf
-sed -i "s|^#Optimize=compress-fast|Optimize=compress-fast|g" /etc/apparmor/parser.conf
-```
-
-## Additional AppArmor profiles
-```bash
-# References:
-# https://github.com/roddhjav/apparmor.d
-
-# Install additional AppArmor profiles in enforce mode
-git clone https://aur.archlinux.org/apparmor.d-git.git
-cd apparmor.d-git
-sed -i "|./configure --complain|./configure|" PKGBUILD
-makepkg -s
-sudo pacman -U apparmor.d-*.pkg.tar.zst \
-  --overwrite etc/apparmor.d/tunables/global \
-  --overwrite etc/apparmor.d/tunables/xdg-user-dirs \
-  --overwrite etc/apparmor.d/abstractions/trash
-cd ..
-rm -rf apparmor.d-git
 ```
