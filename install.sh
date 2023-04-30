@@ -118,12 +118,19 @@ pacstrap /mnt base base-devel linux linux-lts linux-firmware btrfs-progs ${CPU_M
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Configure system
-mkdir -p /mnt/install-arch
-cp ./extra/firefox.js /mnt/install-arch/firefox.js
-cp ./plasma.sh /mnt/install-arch/plasma.sh
+mkdir -p /mnt/install-arch/extra
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/main/extra/firefox.js -O
+cp ./firefox.js /mnt/install-arch/firefox.js
+chmod 0755 /mnt/install-arch/firefox.js
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/main/gnome.sh -O
 cp ./gnome.sh /mnt/install-arch/gnome.sh
+chmod 0755 /mnt/install-arch/gnome.sh
+curl --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/main/gaming.sh -O
 cp ./gaming.sh /mnt/install-arch/gaming.sh
+chmod 0755 /mnt/install-arch/gaming.sh
+curl  --tlsv1.2 -fsSL https://raw.githubusercontent.com/youdontknowdemo/arch-linux/main/setup.sh -O
 cp ./setup.sh /mnt/install-arch/setup.sh
-arch-chroot /mnt /bin/bash /install-arch/setup.sh
+chmod 0755 /mnt/install-arch/setup.sh
+arch-chroot /mnt/ /bin/bash /install-arch/setup.sh
 rm -rf /mnt/install-arch
 umount -R /mnt
