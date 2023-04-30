@@ -270,6 +270,11 @@ pacman -S --noconfirm iptables-nft --ask 4
 
 # Configure mkinitcpio
 sed -i "s|MODULES=()|MODULES=(btrfs${MKINITCPIO_MODULES})|" /etc/mkinitcpio.conf
+if [ ${PLYMOUTH} = "yes" ]; then
+    sed -i "s|^HOOKS.*|HOOKS=(systemd plymouth encrypt autodetect keyboard sd-vconsole modconf block sd-encrypt filesystems fsck)|" /etc/mkinitcpio.conf
+else
+    sed -i "s|^HOOKS.*|HOOKS=(systemd autodetect keyboard sd-vconsole modconf block sd-encrypt filesystems fsck)|" /etc/mkinitcpio.conf
+fi
 sed -i "s|^HOOKS.*|HOOKS=(systemd plymouth encrypt autodetect keyboard sd-vconsole modconf block sd-encrypt filesystems fsck)|" /etc/mkinitcpio.conf
 sed -i "s|#COMPRESSION=\"zstd\"|COMPRESSION=\"zstd\"|" /etc/mkinitcpio.conf
 sed -i "s|#COMPRESSION_OPTIONS=()|COMPRESSION_OPTIONS=(-2)|" /etc/mkinitcpio.conf
@@ -296,7 +301,7 @@ pacman -S --noconfirm grub efibootmgr
 sed -i "s|^GRUB_DEFAULT=.*|GRUB_DEFAULT=\"2\"|g" /etc/default/grub
 sed -i "s|^GRUB_TIMEOUT=.*|GRUB_TIMEOUT=1|g" /etc/default/grub
 sed -i "s|^GRUB_CMDLINE_LINUX_DEFAULT=.*|GRUB_CMDLINE_LINUX_DEFAULT=\"\"|g" /etc/default/grub
-sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"rd.luks.name=$(blkid -s UUID -o value /dev/sda2)=system nmi_watchdog=0 rw quiet splash\"|g" /etc/default/grub
+sed -i "s|^GRUB_CMDLINE_LINUX=.*|GRUB_CMDLINE_LINUX=\"rd.luks.name=$(blkid -s UUID -o value /dev/nvme0n1p2)=system nmi_watchdog=0 rw quiet splash\"|g" /etc/default/grub
 sed -i "s|^GRUB_PRELOAD_MODULES=.*|GRUB_PRELOAD_MODULES=\"part_gpt part_msdos luks2\"|g" /etc/default/grub
 sed -i "s|^GRUB_TIMEOUT_STYLE=.*|GRUB_TIMEOUT_STYLE=hidden|g" /etc/default/grub
 sed -i "s|^#GRUB_ENABLE_CRYPTODISK=.*|GRUB_ENABLE_CRYPTODISK=y|g" /etc/default/grub
@@ -380,7 +385,7 @@ EOF
 pacman -S --noconfirm tpm2-tools tpm2-tss
 
 # Configure initramfs to unlock the encrypted volume
-sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/sda2)=tpm2-device=auto|" /etc/default/grub
+sed -i "s|=system|& rd.luks.options=$(blkid -s UUID -o value /dev/nvme0n1p2)=tpm2-device=auto|" /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 
 ################################################
@@ -876,9 +881,13 @@ if [ ${GAMING} = "yes" ]; then
 fi
 
 ################################################
-##### Plymouth boot splash
+##### Plymouth boot animations
 ################################################
-sudo -u ${NEW_USER} paru -S --noconfirm plymouth-theme-arch-charge-gdm-spinner
+
+#
+if [ ${PLYMOUTH} = "yes" ]; then
+    sudo -u ${NEW_USER} paru -S --noconfirm plymouth-theme-arch-charge-gdm-spinner
+fi
 
 ################################################
 ##### Cleanup
