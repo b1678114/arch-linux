@@ -144,4 +144,3 @@ chmod 0755 /mnt/install-arch/setup.sh
 arch-chroot /mnt/ /bin/bash /install-arch/setup.sh
 rm -rf /mnt/install-arch
 umount -R /mnt
-swapoff -a
