@@ -307,7 +307,7 @@ sed -i "s|^#GRUB_ENABLE_CRYPTODISK=.*|GRUB_ENABLE_CRYPTODISK=y|g" /etc/default/g
 sed -i "s|^#GRUB_DISABLE_SUBMENU=.*|GRUB_DISABLE_SUBMENU=y|g" /etc/default/grub
 
 # Install GRUB
-grub-install --target=i386-pc /dev/sda
+grub-install --target=i386-pc /dev/sdb
 
 # Password protect GRUB editing, but make menu unrestricted
 GRUB_PASSWORD_HASH=$(echo -e "${LUKS_PASSWORD}\n${LUKS_PASSWORD}" | LC_ALL=C /usr/bin/grub-mkpasswd-pbkdf2 | awk '/hash of / {print $NF}')
@@ -369,7 +369,7 @@ Target = grub
 [Action]
 Description = Upgrading GRUB...
 When = PostTransaction
-Exec = /usr/bin/sh -c "grub-install --target=i386-pc /dev/sda; grub-mkconfig -o /boot/grub/grub.cfg"
+Exec = /usr/bin/sh -c "grub-install --target=i386-pc /dev/sdb; grub-mkconfig -o /boot/grub/grub.cfg"
 EOF
 
 
