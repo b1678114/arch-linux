@@ -55,22 +55,22 @@ fi
 # https://www.dwarmstrong.org/archlinux-install/
 
 # Delete old partition layout and re-read partition table
-wipefs -af /dev/sda
-parted --script /dev/sda mklabel msdos
-partprobe /dev/sda
+wipefs -af /dev/sdb
+parted --script /dev/sdb mklabel msdos
+partprobe /dev/sdb
 
 # Partition disk and re-read partition table
-parted --script /dev/sda mkpart primary ext2 1MiB 513MiB
-parted --script /dev/sda mkpart primary ext2 513MiB 100%
-partprobe /dev/sda
+parted --script /dev/sdb mkpart primary ext2 1MiB 513MiB
+parted --script /dev/sdb mkpart primary ext2 513MiB 100%
+partprobe /dev/sdb
 
 ################################################
 ##### LUKS / BTRFS
 ################################################
 
 # Encrypt and open LUKS partition
-echo ${LUKS_PASSWORD} | cryptsetup --type luks2 --hash sha512 --use-random luksFormat /dev/sda2
-echo ${LUKS_PASSWORD} | cryptsetup luksOpen /dev/sda2 system
+echo ${LUKS_PASSWORD} | cryptsetup --type luks2 --hash sha512 --use-random luksFormat /dev/sdb2
+echo ${LUKS_PASSWORD} | cryptsetup luksOpen /dev/sdb2 system
 
 # Create BTRFS
 mkfs.btrfs -L system /dev/mapper/system
@@ -98,8 +98,8 @@ mount -t btrfs -o subvol=@swap LABEL=system /mnt/swap
 ################################################
 
 # Format and mount EFI/boot partition
-mkfs.ext2 -L boot /dev/sda1
-mount --mkdir /dev/sda1 /mnt/boot
+mkfs.ext2 -L boot /dev/sdb1
+mount --mkdir /dev/sdb1 /mnt/boot
 
 ################################################
 ##### Install system
