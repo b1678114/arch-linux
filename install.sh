@@ -61,7 +61,7 @@ partprobe /dev/sda
 
 # Partition disk and re-read partition table
 parted --script /dev/sda mkpart primary ext2 1MiB 513MiB
-parted --script /dev/sdb set 1 boot on
+parted --script /dev/sda set 1 boot on
 parted --script /dev/sda mkpart primary ext2 513MiB 100%
 partprobe /dev/sda
 
